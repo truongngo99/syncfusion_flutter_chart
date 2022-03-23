@@ -81,6 +81,9 @@ import '../user_interaction/zooming_panning.dart';
 import '../utils/enum.dart';
 import '../utils/helper.dart';
 
+typedef ChartAxisLabelRenderCallback = void Function(
+    AxisLabelRenderArgs axisLabelRenderArgs);
+
 ///Renders the Cartesian type charts.
 ///
 ///Cartesian charts are generally charts with horizontal and vertical axes.[SfCartesianChart] provides options to customize
@@ -144,11 +147,13 @@ import '../utils/helper.dart';
 ///  }
 ///  ```
 ///
+///
 // ignore: must_be_immutable
 class SfCartesianChart extends StatefulWidget {
   /// Creating an argument constructor of SfCartesianChart class.
   SfCartesianChart(
       {Key? key,
+      this.onAxisLabelRender,
       this.backgroundColor,
       this.enableSideBySideSeriesPlacement = true,
       this.borderColor = Colors.transparent,
@@ -252,6 +257,8 @@ class SfCartesianChart extends StatefulWidget {
   ///}
   ///```
   final Legend legend;
+
+  final ChartAxisLabelRenderCallback? onAxisLabelRender;
 
   ///Background color of the chart.
   ///
