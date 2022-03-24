@@ -28,9 +28,9 @@ import '../utils/helper.dart';
 ///
 @immutable
 class NumericAxis extends ChartAxis {
-  final String? labelBool0;
-  final String? labelBool1;
-  final bool isBoolChart;
+  String labelBool0;
+  String labelBool1;
+  bool isBoolChart;
 
   /// Creating an argument constructor of NumericAxis class.
   NumericAxis({
@@ -85,8 +85,8 @@ class NumericAxis extends ChartAxis {
     MultiLevelLabelFormatterCallback? multiLevelLabelFormatter,
     MultiLevelLabelStyle? multiLevelLabelStyle,
     ChartLabelFormatterCallback? axisLabelFormatter,
-    this.labelBool0,
-    this.labelBool1,
+    this.labelBool0 = '',
+    this.labelBool1 = '',
     this.isBoolChart = false,
   }) : super(
             name: name,

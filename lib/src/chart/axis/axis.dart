@@ -3490,15 +3490,15 @@ class ChartAxisRendererDetails {
 
   /// To trigger the bool chart render label event
   void triggerBoolChartLabelRenderEvent(
-      String? labelText0, String? labelText1, num labelValue) {
+      String labelText0, String labelText1, num labelValue) {
     AxisLabelRenderArgs axisLabelArgs;
     TextStyle fontStyle = axis.labelStyle;
 
     String actualText;
     if (labelValue == 0) {
-      actualText = labelText0!;
+      actualText = labelText0;
     } else if (labelValue == 1) {
-      actualText = labelText1!;
+      actualText = labelText1;
     } else {
       actualText = '';
     }
