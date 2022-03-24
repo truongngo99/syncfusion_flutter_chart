@@ -28,9 +28,9 @@ import '../utils/helper.dart';
 ///
 @immutable
 class NumericAxis extends ChartAxis {
-  String? labelBool0;
-  String? labelBool1;
-  bool isBoolChart;
+  final String? labelBool0;
+  final String? labelBool1;
+  final bool isBoolChart;
 
   /// Creating an argument constructor of NumericAxis class.
   NumericAxis({
@@ -491,12 +491,6 @@ class NumericAxisRenderer extends ChartAxisRenderer {
         if (numericAxis.labelFormat != null && numericAxis.labelFormat != '') {
           text = numericAxis.labelFormat!.replaceAll(RegExp('{value}'), text);
         }
-        if (numericAxis.isBoolChart) {
-          axisDetails.triggerLabelRenderEvent(text, tempInterval);
-        } else {
-          axisDetails.triggerBoolChartLabelRenderEvent(
-              numericAxis.labelBool0!, numericAxis.labelBool1!, tempInterval);
-        }
         text = axisDetails.stateProperties.chartAxis.primaryYAxisDetails
                         .isStack100 ==
                     true &&
@@ -506,6 +500,12 @@ class NumericAxisRenderer extends ChartAxisRenderer {
             ? '$text%'
             : text;
         axisDetails.triggerLabelRenderEvent(text, tempInterval);
+        if (!numericAxis.isBoolChart) {
+          axisDetails.triggerLabelRenderEvent(text, tempInterval);
+        } else {
+          axisDetails.triggerBoolChartLabelRenderEvent(
+              numericAxis.labelBool0!, numericAxis.labelBool1!, tempInterval);
+        }
       }
     }
 
