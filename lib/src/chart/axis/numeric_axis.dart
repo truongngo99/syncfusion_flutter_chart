@@ -28,8 +28,8 @@ import '../utils/helper.dart';
 ///
 @immutable
 class NumericAxis extends ChartAxis {
-  String labelBool0;
-  String labelBool1;
+  String? labelBool0;
+  String? labelBool1;
   bool isBoolChart;
 
   /// Creating an argument constructor of NumericAxis class.
@@ -85,8 +85,8 @@ class NumericAxis extends ChartAxis {
     MultiLevelLabelFormatterCallback? multiLevelLabelFormatter,
     MultiLevelLabelStyle? multiLevelLabelStyle,
     ChartLabelFormatterCallback? axisLabelFormatter,
-    this.labelBool0 = '',
-    this.labelBool1 = '',
+    this.labelBool0,
+    this.labelBool1,
     this.isBoolChart = false,
   }) : super(
             name: name,
@@ -495,7 +495,7 @@ class NumericAxisRenderer extends ChartAxisRenderer {
           axisDetails.triggerLabelRenderEvent(text, tempInterval);
         } else {
           axisDetails.triggerBoolChartLabelRenderEvent(
-              numericAxis.labelBool0, numericAxis.labelBool1, tempInterval);
+              numericAxis.labelBool0!, numericAxis.labelBool1!, tempInterval);
         }
         text = axisDetails.stateProperties.chartAxis.primaryYAxisDetails
                         .isStack100 ==
