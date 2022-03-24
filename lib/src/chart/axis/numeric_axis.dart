@@ -493,6 +493,9 @@ class NumericAxisRenderer extends ChartAxisRenderer {
         }
         if (numericAxis.isBoolChart) {
           axisDetails.triggerLabelRenderEvent(text, tempInterval);
+        } else {
+          axisDetails.triggerBoolChartLabelRenderEvent(
+              numericAxis.labelBool0, numericAxis.labelBool1, tempInterval);
         }
         text = axisDetails.stateProperties.chartAxis.primaryYAxisDetails
                         .isStack100 ==
