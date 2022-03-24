@@ -492,7 +492,7 @@ class NumericAxisRenderer extends ChartAxisRenderer {
           text = numericAxis.labelFormat!.replaceAll(RegExp('{value}'), text);
         }
         if (numericAxis.isBoolChart) {
-          triggerLabelRenderEvent(text, tempInterval);
+          axisDetails.triggerLabelRenderEvent(text, tempInterval);
         }
         text = axisDetails.stateProperties.chartAxis.primaryYAxisDetails
                         .isStack100 ==
