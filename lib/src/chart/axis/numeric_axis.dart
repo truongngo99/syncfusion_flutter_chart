@@ -491,6 +491,12 @@ class NumericAxisRenderer extends ChartAxisRenderer {
         if (numericAxis.labelFormat != null && numericAxis.labelFormat != '') {
           text = numericAxis.labelFormat!.replaceAll(RegExp('{value}'), text);
         }
+        if (!numericAxis.isBoolChart) {
+          axisDetails.triggerLabelRenderEvent(text, tempInterval);
+        } else {
+          axisDetails.triggerBoolChartLabelRenderEvent(
+              numericAxis.labelBool0!, numericAxis.labelBool1!, tempInterval);
+        }
         text = axisDetails.stateProperties.chartAxis.primaryYAxisDetails
                         .isStack100 ==
                     true &&
@@ -500,12 +506,6 @@ class NumericAxisRenderer extends ChartAxisRenderer {
             ? '$text%'
             : text;
         axisDetails.triggerLabelRenderEvent(text, tempInterval);
-        if (!numericAxis.isBoolChart) {
-          axisDetails.triggerLabelRenderEvent(text, tempInterval);
-        } else {
-          axisDetails.triggerBoolChartLabelRenderEvent(
-              numericAxis.labelBool0!, numericAxis.labelBool1!, tempInterval);
-        }
       }
     }
 
