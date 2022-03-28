@@ -1,11 +1,11 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:syncfusion_flutter_chart/src/chart/axis/axis.dart';
-import 'package:syncfusion_flutter_chart/src/circular_chart/base/circular_state_properties.dart';
-import 'package:syncfusion_flutter_chart/src/common/rendering_details.dart';
-import 'package:syncfusion_flutter_chart/src/pyramid_chart/utils/common.dart';
-import 'package:syncfusion_flutter_chart/src/pyramid_chart/utils/helper.dart';
+import 'package:syncfusion_flutter_charts/src/chart/axis/axis.dart';
+import 'package:syncfusion_flutter_charts/src/circular_chart/base/circular_state_properties.dart';
+import 'package:syncfusion_flutter_charts/src/common/rendering_details.dart';
+import 'package:syncfusion_flutter_charts/src/pyramid_chart/utils/common.dart';
+import 'package:syncfusion_flutter_charts/src/pyramid_chart/utils/helper.dart';
 import 'package:syncfusion_flutter_core/core.dart';
 import 'package:syncfusion_flutter_core/legend_internal.dart'
     hide LegendPosition;

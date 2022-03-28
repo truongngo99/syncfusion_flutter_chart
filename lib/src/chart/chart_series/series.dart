@@ -1,8 +1,8 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
-import 'package:syncfusion_flutter_chart/charts.dart';
-import 'package:syncfusion_flutter_chart/src/common/user_interaction/tooltip_rendering_details.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
+import 'package:syncfusion_flutter_charts/src/common/user_interaction/tooltip_rendering_details.dart';
 
 import '../../common/rendering_details.dart';
 import '../../common/template/rendering.dart';

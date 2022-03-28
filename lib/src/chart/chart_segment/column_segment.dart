@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:syncfusion_flutter_chart/charts.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
 import '../chart_series/series.dart';
 import '../common/common.dart';
 import '../common/renderer.dart';

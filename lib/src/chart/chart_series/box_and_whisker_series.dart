@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:syncfusion_flutter_chart/charts.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
 
 /// This class holds the properties of the Box and Whisker series.
 ///

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:syncfusion_flutter_chart/src/chart/common/cartesian_state_properties.dart';
+import 'package:syncfusion_flutter_charts/src/chart/common/cartesian_state_properties.dart';
 import 'package:syncfusion_flutter_core/core.dart';
 
 import '../../chart/chart_behavior/selection_behavior.dart';

@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:syncfusion_flutter_chart/charts.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:syncfusion_flutter_core/tooltip_internal.dart';
 
 import '../../chart/axis/axis.dart';

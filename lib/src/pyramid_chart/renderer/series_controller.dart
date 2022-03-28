@@ -1,5 +1,5 @@
 import 'dart:ui';
-import 'package:syncfusion_flutter_chart/src/common/utils/helper.dart';
+import 'package:syncfusion_flutter_charts/src/common/utils/helper.dart';
 import '../../chart/chart_series/series.dart';
 import '../../common/utils/typedef.dart';
 import '../base/pyramid_state_properties.dart';

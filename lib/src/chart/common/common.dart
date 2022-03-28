@@ -3,10 +3,10 @@ import 'dart:math' as math;
 import 'dart:ui' as dart_ui;
 
 import 'package:flutter/material.dart';
-import 'package:syncfusion_flutter_chart/src/chart/axis/datetime_axis.dart'
+import 'package:syncfusion_flutter_charts/src/chart/axis/datetime_axis.dart'
     show DateTimeAxisDetails;
-import 'package:syncfusion_flutter_chart/src/chart/chart_series/series_renderer_properties.dart';
-import 'package:syncfusion_flutter_chart/src/chart/common/segment_properties.dart';
+import 'package:syncfusion_flutter_charts/src/chart/chart_series/series_renderer_properties.dart';
+import 'package:syncfusion_flutter_charts/src/chart/common/segment_properties.dart';
 import 'package:syncfusion_flutter_core/core.dart';
 
 import 'package:syncfusion_flutter_core/theme.dart';

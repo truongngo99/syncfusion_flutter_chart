@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:syncfusion_flutter_chart/src/common/user_interaction/tooltip_rendering_details.dart';
+import 'package:syncfusion_flutter_charts/src/common/user_interaction/tooltip_rendering_details.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_core/tooltip_internal.dart';
 

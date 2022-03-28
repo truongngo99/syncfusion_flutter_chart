@@ -2,7 +2,7 @@
 
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
-import 'package:syncfusion_flutter_chart/src/common/utils/helper.dart';
+import 'package:syncfusion_flutter_charts/src/common/utils/helper.dart';
 import 'package:syncfusion_flutter_core/core.dart';
 import '../../../charts.dart';
 import '../axis/axis.dart';

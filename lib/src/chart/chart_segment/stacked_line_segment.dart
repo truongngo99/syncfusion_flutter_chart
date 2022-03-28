@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:syncfusion_flutter_chart/src/chart/chart_series/series_renderer_properties.dart';
-import 'package:syncfusion_flutter_chart/src/chart/common/common.dart';
+import 'package:syncfusion_flutter_charts/src/chart/chart_series/series_renderer_properties.dart';
+import 'package:syncfusion_flutter_charts/src/chart/common/common.dart';
 import '../chart_series/series.dart';
 import '../chart_series/stacked_series_base.dart';
 import '../chart_series/xy_data_series.dart';

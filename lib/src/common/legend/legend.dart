@@ -1,11 +1,11 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:syncfusion_flutter_chart/src/chart/chart_series/series_renderer_properties.dart';
-import 'package:syncfusion_flutter_chart/src/circular_chart/renderer/chart_point.dart';
-import 'package:syncfusion_flutter_chart/src/circular_chart/renderer/circular_series.dart';
-import 'package:syncfusion_flutter_chart/src/circular_chart/renderer/renderer_extension.dart';
-import 'package:syncfusion_flutter_chart/src/common/utils/typedef.dart';
+import 'package:syncfusion_flutter_charts/src/chart/chart_series/series_renderer_properties.dart';
+import 'package:syncfusion_flutter_charts/src/circular_chart/renderer/chart_point.dart';
+import 'package:syncfusion_flutter_charts/src/circular_chart/renderer/circular_series.dart';
+import 'package:syncfusion_flutter_charts/src/circular_chart/renderer/renderer_extension.dart';
+import 'package:syncfusion_flutter_charts/src/common/utils/typedef.dart';
 import 'package:syncfusion_flutter_core/core.dart';
 import 'package:syncfusion_flutter_core/legend_internal.dart'
     hide LegendPosition;

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:syncfusion_flutter_chart/src/chart/common/common.dart';
+import 'package:syncfusion_flutter_charts/src/chart/common/common.dart';
 import '../chart_series/series.dart';
 import '../chart_series/series_renderer_properties.dart';
 import '../chart_series/stacked_series_base.dart';

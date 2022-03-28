@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:syncfusion_flutter_chart/src/chart/user_interaction/zooming_panning.dart';
+import 'package:syncfusion_flutter_charts/src/chart/user_interaction/zooming_panning.dart';
 
 import '../../../charts.dart';
 import '../../common/rendering_details.dart';

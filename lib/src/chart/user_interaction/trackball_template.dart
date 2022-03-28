@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:syncfusion_flutter_chart/charts.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
 
 import '../../common/rendering_details.dart';
 import '../common/cartesian_state_properties.dart';

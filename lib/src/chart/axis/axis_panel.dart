@@ -1,7 +1,7 @@
 import 'dart:math' as math;
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:syncfusion_flutter_chart/src/chart/chart_series/series_renderer_properties.dart';
+import 'package:syncfusion_flutter_charts/src/chart/chart_series/series_renderer_properties.dart';
 import 'package:syncfusion_flutter_core/core.dart';
 import '../axis/axis.dart';
 import '../axis/category_axis.dart';

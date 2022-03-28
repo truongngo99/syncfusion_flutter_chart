@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:syncfusion_flutter_chart/src/chart/common/renderer.dart';
+import 'package:syncfusion_flutter_charts/src/chart/common/renderer.dart';
 import '../../../charts.dart';
 import '../../common/rendering_details.dart';
 import '../../common/user_interaction/selection_behavior.dart';

@@ -149,7 +149,7 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.1.0"
-  syncfusion_flutter_chart:
+  syncfusion_flutter_charts:
     dependency: "direct main"
     description:
       path: ".."

@@ -2,8 +2,8 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' show DateFormat;
-import 'package:syncfusion_flutter_chart/src/chart/chart_series/error_bar_series.dart';
-import 'package:syncfusion_flutter_chart/src/chart/chart_series/series_renderer_properties.dart';
+import 'package:syncfusion_flutter_charts/src/chart/chart_series/error_bar_series.dart';
+import 'package:syncfusion_flutter_charts/src/chart/chart_series/series_renderer_properties.dart';
 
 import '../../common/event_args.dart' show ErrorBarValues;
 import '../../common/utils/helper.dart';

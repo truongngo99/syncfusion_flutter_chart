@@ -1,13 +1,13 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:syncfusion_flutter_chart/src/chart/axis/multi_level_labels.dart'
+import 'package:syncfusion_flutter_charts/src/chart/axis/multi_level_labels.dart'
     show AxisMultiLevelLabel;
-import 'package:syncfusion_flutter_chart/src/chart/chart_segment/chart_segment.dart';
-import 'package:syncfusion_flutter_chart/src/chart/chart_series/series_renderer_properties.dart';
-import 'package:syncfusion_flutter_chart/src/chart/common/cartesian_state_properties.dart';
-import 'package:syncfusion_flutter_chart/src/circular_chart/base/circular_state_properties.dart';
-import 'package:syncfusion_flutter_chart/src/common/utils/helper.dart';
+import 'package:syncfusion_flutter_charts/src/chart/chart_segment/chart_segment.dart';
+import 'package:syncfusion_flutter_charts/src/chart/chart_series/series_renderer_properties.dart';
+import 'package:syncfusion_flutter_charts/src/chart/common/cartesian_state_properties.dart';
+import 'package:syncfusion_flutter_charts/src/circular_chart/base/circular_state_properties.dart';
+import 'package:syncfusion_flutter_charts/src/common/utils/helper.dart';
 import 'package:syncfusion_flutter_core/core.dart';
 import 'package:syncfusion_flutter_core/tooltip_internal.dart';
 

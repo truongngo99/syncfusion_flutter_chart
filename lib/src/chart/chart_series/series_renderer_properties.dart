@@ -2,8 +2,8 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' show DateFormat;
-import 'package:syncfusion_flutter_chart/charts.dart';
-import 'package:syncfusion_flutter_chart/src/chart/common/segment_properties.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
+import 'package:syncfusion_flutter_charts/src/chart/common/segment_properties.dart';
 import '../../common/user_interaction/selection_behavior.dart';
 import '../../common/utils/helper.dart';
 import '../axis/axis.dart';

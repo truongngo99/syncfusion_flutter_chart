@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:syncfusion_flutter_chart/src/chart/chart_series/series_renderer_properties.dart';
-import 'package:syncfusion_flutter_chart/src/chart/common/segment_properties.dart';
+import 'package:syncfusion_flutter_charts/src/chart/chart_series/series_renderer_properties.dart';
+import 'package:syncfusion_flutter_charts/src/chart/common/segment_properties.dart';
 
 import '../../circular_chart/base/circular_base.dart';
 import '../../common/event_args.dart';
