@@ -506,7 +506,6 @@ class NumericAxisRenderer extends ChartAxisRenderer {
                         .stateProperties.chartAxis.primaryYAxisDetails.name
             ? '$text%'
             : text;
-        axisDetails.triggerLabelRenderEvent(text, tempInterval);
         if (!numericAxis.isBoolChart) {
           axisDetails.triggerLabelRenderEvent(text, tempInterval);
         } else {
