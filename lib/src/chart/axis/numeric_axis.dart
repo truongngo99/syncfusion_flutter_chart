@@ -28,6 +28,10 @@ import '../utils/helper.dart';
 ///
 @immutable
 class NumericAxis extends ChartAxis {
+  final String? labelBool0;
+  final String? labelBool1;
+  final bool isBoolChart;
+
   /// Creating an argument constructor of NumericAxis class.
   NumericAxis(
       {String? name,
@@ -80,7 +84,10 @@ class NumericAxis extends ChartAxis {
       List<NumericMultiLevelLabel>? multiLevelLabels,
       MultiLevelLabelFormatterCallback? multiLevelLabelFormatter,
       MultiLevelLabelStyle? multiLevelLabelStyle,
-      ChartLabelFormatterCallback? axisLabelFormatter})
+      ChartLabelFormatterCallback? axisLabelFormatter,
+      this.labelBool0,
+      this.labelBool1,
+      this.isBoolChart = false})
       : super(
             name: name,
             isVisible: isVisible,
@@ -499,7 +506,12 @@ class NumericAxisRenderer extends ChartAxisRenderer {
                         .stateProperties.chartAxis.primaryYAxisDetails.name
             ? '$text%'
             : text;
-        axisDetails.triggerLabelRenderEvent(text, tempInterval);
+        if (!numericAxis.isBoolChart) {
+          axisDetails.triggerLabelRenderEvent(text, tempInterval);
+        } else {
+          axisDetails.triggerBoolChartLabelRenderEvent(
+              numericAxis.labelBool0!, numericAxis.labelBool1!, tempInterval);
+        }
       }
     }
 
