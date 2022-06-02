@@ -28,67 +28,60 @@ import '../utils/helper.dart';
 ///
 @immutable
 class NumericAxis extends ChartAxis {
-  final String? labelBool0;
-  final String? labelBool1;
-  final bool isBoolChart;
-
   /// Creating an argument constructor of NumericAxis class.
-  NumericAxis({
-    String? name,
-    bool? isVisible,
-    bool? anchorRangeToVisiblePoints,
-    AxisTitle? title,
-    AxisLine? axisLine,
-    ChartRangePadding? rangePadding,
-    AxisLabelIntersectAction? labelIntersectAction,
-    int? labelRotation,
-    this.labelFormat,
-    this.numberFormat,
-    LabelAlignment? labelAlignment,
-    ChartDataLabelPosition? labelPosition,
-    TickPosition? tickPosition,
-    bool? isInversed,
-    bool? opposedPosition,
-    int? minorTicksPerInterval,
-    int? maximumLabels,
-    MajorTickLines? majorTickLines,
-    MinorTickLines? minorTickLines,
-    MajorGridLines? majorGridLines,
-    MinorGridLines? minorGridLines,
-    EdgeLabelPlacement? edgeLabelPlacement,
-    TextStyle? labelStyle,
-    double? plotOffset,
-    double? zoomFactor,
-    double? zoomPosition,
-    bool? enableAutoIntervalOnZooming,
-    InteractiveTooltip? interactiveTooltip,
-    this.minimum,
-    this.maximum,
-    double? interval,
-    this.visibleMinimum,
-    this.visibleMaximum,
-    dynamic crossesAt,
-    String? associatedAxisName,
-    bool? placeLabelsNearAxisLine,
-    List<PlotBand>? plotBands,
-    this.decimalPlaces = 3,
-    int? desiredIntervals,
-    RangeController? rangeController,
-    double? maximumLabelWidth,
-    double? labelsExtent,
-    int? autoScrollingDelta,
-    AutoScrollingMode? autoScrollingMode,
-    double? borderWidth,
-    Color? borderColor,
-    AxisBorderType? axisBorderType,
-    List<NumericMultiLevelLabel>? multiLevelLabels,
-    MultiLevelLabelFormatterCallback? multiLevelLabelFormatter,
-    MultiLevelLabelStyle? multiLevelLabelStyle,
-    ChartLabelFormatterCallback? axisLabelFormatter,
-    this.labelBool0,
-    this.labelBool1,
-    this.isBoolChart = false,
-  }) : super(
+  NumericAxis(
+      {String? name,
+      bool? isVisible,
+      bool? anchorRangeToVisiblePoints,
+      AxisTitle? title,
+      AxisLine? axisLine,
+      ChartRangePadding? rangePadding,
+      AxisLabelIntersectAction? labelIntersectAction,
+      int? labelRotation,
+      this.labelFormat,
+      this.numberFormat,
+      LabelAlignment? labelAlignment,
+      ChartDataLabelPosition? labelPosition,
+      TickPosition? tickPosition,
+      bool? isInversed,
+      bool? opposedPosition,
+      int? minorTicksPerInterval,
+      int? maximumLabels,
+      MajorTickLines? majorTickLines,
+      MinorTickLines? minorTickLines,
+      MajorGridLines? majorGridLines,
+      MinorGridLines? minorGridLines,
+      EdgeLabelPlacement? edgeLabelPlacement,
+      TextStyle? labelStyle,
+      double? plotOffset,
+      double? zoomFactor,
+      double? zoomPosition,
+      bool? enableAutoIntervalOnZooming,
+      InteractiveTooltip? interactiveTooltip,
+      this.minimum,
+      this.maximum,
+      double? interval,
+      this.visibleMinimum,
+      this.visibleMaximum,
+      dynamic crossesAt,
+      String? associatedAxisName,
+      bool? placeLabelsNearAxisLine,
+      List<PlotBand>? plotBands,
+      this.decimalPlaces = 3,
+      int? desiredIntervals,
+      RangeController? rangeController,
+      double? maximumLabelWidth,
+      double? labelsExtent,
+      int? autoScrollingDelta,
+      AutoScrollingMode? autoScrollingMode,
+      double? borderWidth,
+      Color? borderColor,
+      AxisBorderType? axisBorderType,
+      List<NumericMultiLevelLabel>? multiLevelLabels,
+      MultiLevelLabelFormatterCallback? multiLevelLabelFormatter,
+      MultiLevelLabelStyle? multiLevelLabelStyle,
+      ChartLabelFormatterCallback? axisLabelFormatter})
+      : super(
             name: name,
             isVisible: isVisible,
             anchorRangeToVisiblePoints: anchorRangeToVisiblePoints,
@@ -506,12 +499,7 @@ class NumericAxisRenderer extends ChartAxisRenderer {
                         .stateProperties.chartAxis.primaryYAxisDetails.name
             ? '$text%'
             : text;
-        if (!numericAxis.isBoolChart) {
-          axisDetails.triggerLabelRenderEvent(text, tempInterval);
-        } else {
-          axisDetails.triggerBoolChartLabelRenderEvent(
-              numericAxis.labelBool0!, numericAxis.labelBool1!, tempInterval);
-        }
+        axisDetails.triggerLabelRenderEvent(text, tempInterval);
       }
     }
 
@@ -548,7 +536,7 @@ class NumericAxisRenderer extends ChartAxisRenderer {
       axisDetails.updateAutoScrollingDelta(
           axisDetails.axis.autoScrollingDelta!, this);
     }
-    if ((!canAutoScroll || stateProperties.zoomedState == true) &&
+    if ((!canAutoScroll || (stateProperties.zoomedState ?? false)) &&
         !(stateProperties.rangeChangeBySlider &&
             !stateProperties.canSetRangeController)) {
       axisDetails.setZoomFactorAndPosition(
@@ -613,7 +601,7 @@ class NumericAxisDetails extends ChartAxisRendererDetails {
   void findAxisMinMaxValues(SeriesRendererDetails seriesRendererDetails,
       CartesianChartPoint<dynamic> point, int pointIndex, int dataLength,
       [bool? isXVisibleRange, bool? isYVisibleRange]) {
-    final bool _anchorRangeToVisiblePoints =
+    final bool anchorRangeToVisiblePoints =
         seriesRendererDetails.yAxisDetails!.axis.anchorRangeToVisiblePoints;
     final String seriesType = seriesRendererDetails.seriesType;
     point.xValue = point.x;
@@ -622,7 +610,7 @@ class NumericAxisDetails extends ChartAxisRendererDetails {
       seriesRendererDetails.minimumX ??= point.xValue;
       seriesRendererDetails.maximumX ??= point.xValue;
     }
-    if ((isXVisibleRange! || !_anchorRangeToVisiblePoints) &&
+    if ((isXVisibleRange! || !anchorRangeToVisiblePoints) &&
         !seriesType.contains('range') &&
         !seriesType.contains('hilo') &&
         !seriesType.contains('candle') &&
@@ -638,7 +626,7 @@ class NumericAxisDetails extends ChartAxisRendererDetails {
       seriesRendererDetails.maximumX =
           math.max(seriesRendererDetails.maximumX!, point.xValue as num);
     }
-    if (isXVisibleRange || !_anchorRangeToVisiblePoints) {
+    if (isXVisibleRange || !anchorRangeToVisiblePoints) {
       if (point.yValue != null &&
           (!seriesType.contains('range') &&
               !seriesType.contains('hilo') &&

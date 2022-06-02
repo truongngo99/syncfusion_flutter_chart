@@ -43,43 +43,6 @@ class TooltipArgs {
   final num? viewportPointIndex;
 }
 
-/// Holds the onAxisLabelRender event arguments.
-///
-/// AxisLabelRenderArgs is the type argument for onAxisLabelRender event. Whenever the axis gets rendered, the onAxisLabelRender event is
-/// triggered and provides options to set the axis label text and label text style.
-///
-///It has the public properties of axis label text, axis name, axis type, label text style, and orientation.
-
-class AxisLabelRenderArgs {
-  /// Creating an argument constructor of AxisLabelRenderArgs class.
-  AxisLabelRenderArgs([this.value, this.axisName, this.orientation, this.axis]);
-
-  /// Get and set the text value of the axis label.
-  String? text;
-
-  /// Trimmed text value of the axis label.
-  // String _trimmedText;
-
-  /// Get the value of the axis label.
-  final num? value;
-
-  /// Get the axis name.
-  final String? axisName;
-
-  /// Get the orientation for an axis.
-  final AxisOrientation? orientation;
-
-  /// Get the chart axis type and its properties.
-  final ChartAxis? axis;
-
-  /// Get and set the text style of an axis label.
-  TextStyle textStyle = const TextStyle(
-      fontFamily: 'Roboto',
-      fontStyle: FontStyle.normal,
-      fontWeight: FontWeight.normal,
-      fontSize: 12);
-}
-
 /// Holds the `onActualRangeChanged` event arguments.
 ///
 /// ActualRangeChangedArgs is the type argument for `onActualRangeChanged` event. Whenever the actual range is changed, the `onActualRangeChanged` event is
