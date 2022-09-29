@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:syncfusion_flutter_charts/charts.dart';
+import '../../../charts.dart';
 import '../chart_series/series.dart';
+import '../chart_series/series_renderer_properties.dart';
 import '../common/common.dart';
 import '../common/renderer.dart';
 import '../common/segment_properties.dart';
@@ -27,7 +28,7 @@ class BarSegment extends ChartSegment {
     _setSegmentProperties();
     if (_segmentProperties.series.gradient == null) {
       fillPaint = Paint()
-        ..color = _segmentProperties.currentPoint!.isEmpty == true
+        ..color = (_segmentProperties.currentPoint!.isEmpty ?? false)
             ? _segmentProperties.series.emptyPointSettings.color
             : (_segmentProperties.currentPoint!.pointColorMapper ??
                 _segmentProperties.color!)
@@ -60,15 +61,16 @@ class BarSegment extends ChartSegment {
     _setSegmentProperties();
     strokePaint = Paint()
       ..style = PaintingStyle.stroke
-      ..strokeWidth = _segmentProperties.currentPoint!.isEmpty == true
+      ..strokeWidth = (_segmentProperties.currentPoint!.isEmpty ?? false)
           ? _segmentProperties.series.emptyPointSettings.borderWidth
           : _segmentProperties.strokeWidth!;
     (_segmentProperties.series.borderGradient != null)
         ? strokePaint!.shader = _segmentProperties.series.borderGradient!
             .createShader(_segmentProperties.currentPoint!.region!)
-        : strokePaint!.color = _segmentProperties.currentPoint!.isEmpty == true
-            ? _segmentProperties.series.emptyPointSettings.borderColor
-            : _segmentProperties.strokeColor!;
+        : strokePaint!.color =
+            (_segmentProperties.currentPoint!.isEmpty ?? false)
+                ? _segmentProperties.series.emptyPointSettings.borderColor
+                : _segmentProperties.strokeColor!;
     _segmentProperties.series.borderWidth == 0
         ? strokePaint!.color = Colors.transparent
         : strokePaint!.color;
@@ -102,9 +104,12 @@ class BarSegment extends ChartSegment {
       _drawSegmentRect(canvas, segmentRect, fillPaint!);
     }
     if (strokePaint != null) {
-      (_segmentProperties.series.dashArray[0] != 0 &&
-              _segmentProperties.series.dashArray[1] != 0)
-          ? drawDashedLine(canvas, _segmentProperties.series.dashArray,
+      final SeriesRendererDetails seriesRendererDetails =
+          SeriesHelper.getSeriesRendererDetails(
+              _segmentProperties.seriesRenderer);
+      (seriesRendererDetails.dashArray![0] != 0 &&
+              seriesRendererDetails.dashArray![1] != 0)
+          ? drawDashedLine(canvas, seriesRendererDetails.dashArray!,
               strokePaint!, _segmentProperties.path)
           : _drawSegmentRect(canvas, segmentRect, strokePaint!);
     }

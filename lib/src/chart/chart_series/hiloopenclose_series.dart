@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:syncfusion_flutter_charts/charts.dart';
+import '../../../charts.dart';
 
 import 'financial_series_base.dart';
 
@@ -215,6 +215,6 @@ class HiloOpenCloseSeries<T, D> extends FinancialSeriesBase<T, D> {
       onPointDoubleTap,
       onPointLongPress
     ];
-    return hashList(values);
+    return Object.hashAll(values);
   }
 }

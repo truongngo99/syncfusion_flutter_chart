@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:syncfusion_flutter_charts/charts.dart';
 
 import './../axis/axis.dart';
-import '../axis/axis.dart';
+import '../../../charts.dart';
 import '../chart_segment/chart_segment.dart';
 import '../chart_series/series.dart';
 import '../chart_series/series_renderer_properties.dart';
@@ -30,21 +29,21 @@ class ErrorBarSeriesRenderer extends XyDataSeriesRenderer {
         SegmentProperties(_currentSeriesDetails.stateProperties, segment));
     final SegmentProperties segmentProperties =
         SegmentHelper.getSegmentProperties(segment);
-    final ErrorBarSeries<dynamic, dynamic> _errorBarSeries =
+    final ErrorBarSeries<dynamic, dynamic> errorBarSeries =
         _currentSeriesDetails.series as ErrorBarSeries<dynamic, dynamic>;
     segmentProperties.seriesRenderer = this;
-    segmentProperties.series = _errorBarSeries;
+    segmentProperties.series = errorBarSeries;
     segmentProperties.seriesIndex = seriesIndex;
     segment.currentSegmentIndex = pointIndex;
     segment.animationFactor = animateFactor;
-    if (_errorBarSeries.onRenderDetailsUpdate != null &&
+    if (errorBarSeries.onRenderDetailsUpdate != null &&
         _currentSeriesDetails.animationController.status ==
             AnimationStatus.completed) {
       final ErrorBarRenderDetails errorBarRenderDetails = ErrorBarRenderDetails(
           currentPoint.visiblePointIndex,
           currentPoint.overallDataPointIndex,
           currentPoint.errorBarValues);
-      _errorBarSeries.onRenderDetailsUpdate!(errorBarRenderDetails);
+      errorBarSeries.onRenderDetailsUpdate!(errorBarRenderDetails);
     }
     segmentProperties.currentPoint = currentPoint;
     _segmentSeriesDetails =
@@ -170,6 +169,7 @@ class ErrorBarChartPainter extends CustomPainter {
         point = dataPoints[pointIndex];
         final bool withInXRange = withInRange(
             point.xValue, seriesRendererDetails.xAxisDetails!.visibleRange!);
+        // ignore: unnecessary_null_comparison
         final bool withInYRange = point != null &&
             point.yValue != null &&
             withInRange(point.yValue,

@@ -1,10 +1,12 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
-import 'package:syncfusion_flutter_charts/charts.dart';
-import 'package:syncfusion_flutter_charts/src/common/user_interaction/tooltip_rendering_details.dart';
+
+import '../../../charts.dart';
 import '../../common/rendering_details.dart';
 import '../../common/state_properties.dart';
 import '../../common/user_interaction/tooltip.dart';
+import '../../common/user_interaction/tooltip_rendering_details.dart';
 import '../base/funnel_plot_area.dart';
 import '../base/series_base.dart';
 import '../renderer/data_label_renderer.dart';
@@ -59,6 +61,9 @@ class FunnelStateProperties extends StateProperties {
 
   /// Specifies whether the text direction of chart widget is RTL or LTR.
   late bool isRtl;
+
+  /// Specifies whether the legend is refreshed
+  bool legendRefresh = false;
 
   /// To redraw chart elements.
   void redraw() {

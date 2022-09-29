@@ -1,12 +1,12 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
-import 'package:syncfusion_flutter_charts/charts.dart';
-import 'package:syncfusion_flutter_charts/src/common/user_interaction/tooltip_rendering_details.dart';
 
+import '../../../charts.dart';
 import '../../common/rendering_details.dart';
 import '../../common/template/rendering.dart';
 import '../../common/user_interaction/tooltip.dart';
+import '../../common/user_interaction/tooltip_rendering_details.dart';
 import '../axis/axis.dart';
 import '../axis/category_axis.dart';
 import '../axis/datetime_axis.dart';
@@ -82,6 +82,8 @@ abstract class CartesianSeries<T, D> extends ChartSeries<T, D> {
         enableTooltip = enableTooltip ?? true,
         emptyPointSettings = emptyPointSettings ?? EmptyPointSettings(),
         dashArray = dashArray ?? <double>[0, 0],
+        assert(dashArray == null || dashArray.isNotEmpty,
+            'The dashArray list must not be empty'),
         initialSelectedDataIndexes = initialSelectedDataIndexes ?? <int>[],
         animationDuration = animationDuration ?? 1500,
         borderColor = borderColor ?? Colors.transparent,
@@ -1216,7 +1218,9 @@ class ChartSeriesController {
   /// ```
   final XyDataSeriesRenderer seriesRenderer;
 
-  bool _needXRecalculation = false, _needYRecalculation = false;
+  bool _needXRecalculation = false,
+      _needYRecalculation = false,
+      _needRemove = false;
 
   /// Used to process only the newly added, updated and removed data points in a series,
   /// instead of processing all the data points.
@@ -1274,7 +1278,7 @@ class ChartSeriesController {
       int? addedDataIndex,
       int? removedDataIndex,
       int? updatedDataIndex}) {
-    bool _needUpdate = false;
+    bool needUpdate = false;
     if (removedDataIndexes != null && removedDataIndexes.isNotEmpty) {
       _removeDataPointsList(removedDataIndexes);
     } else if (removedDataIndex != null) {
@@ -1286,14 +1290,14 @@ class ChartSeriesController {
       _addOrUpdateDataPoint(addedDataIndex, false);
     }
     if (updatedDataIndexes != null && updatedDataIndexes.isNotEmpty) {
-      _needUpdate = true;
+      needUpdate = true;
       _addOrUpdateDataPoints(updatedDataIndexes, true);
     } else if (updatedDataIndex != null) {
-      _needUpdate = true;
+      needUpdate = true;
       _addOrUpdateDataPoint(updatedDataIndex, true);
     }
     _updateCartesianSeries(
-        _needXRecalculation, _needYRecalculation, _needUpdate);
+        _needXRecalculation, _needYRecalculation, needUpdate);
   }
 
   /// Add or update the data points on dynamic series update.
@@ -1330,14 +1334,39 @@ class ChartSeriesController {
         currentPoint.xValue = currentPoint.x;
         x = calculateLogBaseValue((x > 1) == true ? x : 1, axis.logBase);
       } else if (seriesRendererDetails.xAxisDetails is CategoryAxisDetails) {
-        x = index;
+        final CategoryAxisDetails axisDetails =
+            seriesRendererDetails.xAxisDetails as CategoryAxisDetails;
+        final CategoryAxis categoryAxis = axisDetails.axis as CategoryAxis;
+        if (categoryAxis.arrangeByIndex) {
+          // ignore: unnecessary_null_comparison
+          index < axisDetails.labels.length && axisDetails.labels[index] != null
+              ? axisDetails.labels[index] += ', ${currentPoint.x}'
+              : axisDetails.labels.add(currentPoint.x.toString());
+          x = index;
+        } else {
+          if (!axisDetails.labels.contains(currentPoint.x.toString())) {
+            axisDetails.labels.add(currentPoint.x.toString());
+          }
+          x = axisDetails.labels.indexOf(currentPoint.x.toString());
+        }
       }
       currentPoint.xValue ??= x;
       currentPoint.yValue = currentPoint.y;
       currentPoint.overallDataPointIndex = index;
+      // This sets the minimumX and maximumX the same value when there is only one datapoint
+      if (series.dataSource.length == 1) {
+        seriesRendererDetails.minimumX = x;
+        seriesRendererDetails.maximumX = x;
+      }
       if (!_needXRecalculation &&
           ((xRange.minimum >= x) == true || (xRange.maximum <= x) == true)) {
         _needXRecalculation = true;
+        if (seriesRendererDetails.minimumX! >= x) {
+          seriesRendererDetails.minimumX = x;
+        }
+        if (seriesRendererDetails.maximumX! <= x) {
+          seriesRendererDetails.maximumX = x;
+        }
       }
       num? minYVal = currentPoint.y ?? currentPoint.low;
       num? maxYVal = currentPoint.y ?? currentPoint.high;
@@ -1351,12 +1380,23 @@ class ChartSeriesController {
         maxYVal =
             calculateLogBaseValue(maxYVal > 1 ? maxYVal : 1, axis.logBase);
       }
+      // This sets the minimumY and maximumY the same value when there is only one datapoint
+      if (series.dataSource.length == 1) {
+        seriesRendererDetails.minimumY = minYVal;
+        seriesRendererDetails.maximumY = maxYVal;
+      }
       if (!_needYRecalculation &&
           minYVal != null &&
           maxYVal != null &&
           ((yRange.minimum >= minYVal) == true ||
               (yRange.maximum <= maxYVal) == true)) {
         _needYRecalculation = true;
+        if (seriesRendererDetails.minimumY! >= minYVal) {
+          seriesRendererDetails.minimumY = minYVal;
+        }
+        if (seriesRendererDetails.maximumY! <= maxYVal) {
+          seriesRendererDetails.maximumY = maxYVal;
+        }
       }
 
       if (needUpdate) {
@@ -1384,6 +1424,10 @@ class ChartSeriesController {
           : currentPoint.y == null) {
         // ignore: unnecessary_type_check
         if (seriesRenderer is XyDataSeriesRenderer) {
+          if (seriesRenderer is FastLineSeriesRenderer &&
+              !seriesRendererDetails.containsEmptyPoints) {
+            seriesRendererDetails.containsEmptyPoints = true;
+          }
           seriesRenderer.calculateEmptyPointValue(
               index, currentPoint, seriesRenderer);
         }
@@ -1589,8 +1633,8 @@ class ChartSeriesController {
     final List<int> indexList = removedDataIndexes.toSet().toList();
     indexList.sort((int b, int a) => a.compareTo(b));
     for (int i = 0; i < indexList.length; i++) {
-      final int _dataIndex = indexList[i];
-      _removeDataPoint(_dataIndex);
+      final int dataIndex = indexList[i];
+      _removeDataPoint(dataIndex);
     }
   }
 
@@ -1613,9 +1657,10 @@ class ChartSeriesController {
       // ignore: unnecessary_null_comparison
       if (currentPoint != null) {
         if (!_needXRecalculation &&
-            (seriesRendererDetails.minimumX == currentPoint.x ||
-                seriesRendererDetails.maximumX == currentPoint.x)) {
+            (seriesRendererDetails.minimumX == currentPoint.xValue ||
+                seriesRendererDetails.maximumX == currentPoint.xValue)) {
           _needXRecalculation = true;
+          _needRemove = true;
         }
         final String seriesType = seriesRendererDetails.seriesType;
 
@@ -1637,6 +1682,7 @@ class ChartSeriesController {
             (seriesRendererDetails.minimumY == minYVal ||
                 seriesRendererDetails.maximumY == maxYVal)) {
           _needYRecalculation = true;
+          _needRemove = true;
         }
       }
     }
@@ -1649,23 +1695,34 @@ class ChartSeriesController {
         SeriesHelper.getSeriesRendererDetails(seriesRenderer);
     final CartesianStateProperties stateProperties =
         seriesRendererDetails.stateProperties;
+    final ChartAxisRendererDetails xAxisDetails =
+        seriesRendererDetails.xAxisDetails!;
+    final String seriesType = seriesRendererDetails.seriesType;
+    final bool isFindSeriesMinMax =
+        xAxisDetails is DateTimeCategoryAxisDetails ||
+            seriesType == 'boxandwhisker' ||
+            seriesType == 'waterfall' ||
+            seriesType == 'errorbar' ||
+            seriesRendererDetails.seriesType.contains('stacked') == true;
     stateProperties.isRedrawByZoomPan = false;
     if (needXRecalculation || needYRecalculation || needUpdate) {
-      if (needXRecalculation) {
-        seriesRendererDetails.minimumX = seriesRendererDetails.maximumX = null;
-        final ChartAxisRendererDetails xAxisDetails =
-            seriesRendererDetails.xAxisDetails!;
-        if (xAxisDetails is DateTimeCategoryAxisDetails) {
-          xAxisDetails.labels.clear();
+      if (isFindSeriesMinMax || _needRemove) {
+        if (needXRecalculation) {
+          seriesRendererDetails.minimumX =
+              seriesRendererDetails.maximumX = null;
+          if (xAxisDetails is DateTimeCategoryAxisDetails) {
+            xAxisDetails.labels.clear();
+          }
         }
-      }
-      if (needYRecalculation) {
-        seriesRendererDetails.minimumY = seriesRendererDetails.maximumY = null;
-      }
-      stateProperties.chartSeries.findSeriesMinMax(seriesRendererDetails);
-      if (seriesRendererDetails.seriesType.contains('stacked') == true) {
-        stateProperties.chartSeries
-            .calculateStackedValues(findSeriesCollection(stateProperties));
+        if (needYRecalculation) {
+          seriesRendererDetails.minimumY =
+              seriesRendererDetails.maximumY = null;
+        }
+        stateProperties.chartSeries.findSeriesMinMax(seriesRendererDetails);
+        if (seriesRendererDetails.seriesType.contains('stacked') == true) {
+          stateProperties.chartSeries
+              .calculateStackedValues(findSeriesCollection(stateProperties));
+        }
       }
     }
     if (needXRecalculation) {
@@ -1688,6 +1745,10 @@ class ChartSeriesController {
       _repaintSeries(stateProperties, seriesRendererDetails);
     }
     stateProperties.isLoadMoreIndicator = false;
+    if (!isFindSeriesMinMax) {
+      _needXRecalculation = false;
+      _needYRecalculation = false;
+    }
     //This makes the update data source method work with dynamic animation(scheduled for release)
     // seriesRenderer.seriesRendererDetails.needsAnimation = seriesRenderer.seriesRendererDetails.needAnimateSeriesElements =
     //     chartState.widgetNeedUpdate = true;

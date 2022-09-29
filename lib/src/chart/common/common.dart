@@ -3,11 +3,6 @@ import 'dart:math' as math;
 import 'dart:ui' as dart_ui;
 
 import 'package:flutter/material.dart';
-import 'package:syncfusion_flutter_charts/src/chart/axis/datetime_axis.dart'
-    show DateTimeAxisDetails;
-import 'package:syncfusion_flutter_charts/src/chart/chart_series/series_renderer_properties.dart';
-import 'package:syncfusion_flutter_charts/src/chart/common/marker.dart';
-import 'package:syncfusion_flutter_charts/src/chart/common/segment_properties.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 
 import '../../common/event_args.dart';
@@ -16,11 +11,13 @@ import '../../common/utils/enum.dart';
 import '../../common/utils/helper.dart';
 import '../../common/utils/typedef.dart';
 import '../axis/axis.dart';
+import '../axis/datetime_axis.dart' show DateTimeAxisDetails;
 import '../base/chart_base.dart';
 import '../chart_segment/chart_segment.dart';
 import '../chart_segment/scatter_segment.dart';
 import '../chart_series/error_bar_series.dart';
 import '../chart_series/series.dart';
+import '../chart_series/series_renderer_properties.dart';
 import '../chart_series/stacked_series_base.dart';
 import '../chart_series/waterfall_series.dart';
 import '../chart_series/xy_data_series.dart';
@@ -33,6 +30,8 @@ import '../user_interaction/trackball.dart';
 import '../utils/enum.dart'
     show ErrorBarType, RenderingMode, Direction, DateTimeIntervalType;
 import '../utils/helper.dart';
+import 'marker.dart';
+import 'segment_properties.dart';
 
 export 'package:syncfusion_flutter_core/core.dart'
     show DataMarkerType, TooltipAlignment;
@@ -1004,7 +1003,7 @@ double getAnimateValue(
 void animateScatterSeries(
     SeriesRendererDetails seriesRendererDetails,
     CartesianChartPoint<dynamic> point,
-    CartesianChartPoint<dynamic>? _oldPoint,
+    CartesianChartPoint<dynamic>? oldPoint,
     double animationFactor,
     Canvas canvas,
     Paint fillPaint,
@@ -1031,13 +1030,13 @@ void animateScatterSeries(
   double y = point.markerPoint!.y;
   if (seriesRendererDetails.stateProperties.renderingDetails.widgetNeedUpdate ==
           true &&
-      _oldPoint != null &&
+      oldPoint != null &&
       seriesRendererDetails.reAnimate == false &&
-      _oldPoint.markerPoint != null) {
+      oldPoint.markerPoint != null) {
     x = getAnimateValue(
-        animationFactor, x, _oldPoint.markerPoint!.x, x, seriesRendererDetails);
+        animationFactor, x, oldPoint.markerPoint!.x, x, seriesRendererDetails);
     y = getAnimateValue(
-        animationFactor, y, _oldPoint.markerPoint!.y, y, seriesRendererDetails);
+        animationFactor, y, oldPoint.markerPoint!.y, y, seriesRendererDetails);
     segment.animationFactor = 1;
   }
   final bool isMarkerEventTriggered =
@@ -1411,12 +1410,11 @@ void animateBoxSeries(
       path.close();
     }
   }
-  if (seriesRendererDetails.series.dashArray[0] != 0 &&
-      seriesRendererDetails.series.dashArray[1] != 0 &&
+  if (seriesRendererDetails.dashArray![0] != 0 &&
+      seriesRendererDetails.dashArray![1] != 0 &&
       seriesRendererDetails.series.animationDuration <= 0) {
     canvas.drawPath(path, fillPaint);
-    drawDashedLine(
-        canvas, seriesRendererDetails.series.dashArray, strokePaint, path);
+    drawDashedLine(canvas, seriesRendererDetails.dashArray!, strokePaint, path);
   } else {
     canvas.drawPath(path, fillPaint);
     canvas.drawPath(path, strokePaint);
@@ -1591,12 +1589,11 @@ void animateCandleSeries(
     }
   }
 
-  (seriesRendererDetails.series.dashArray[0] != 0 &&
-          seriesRendererDetails.series.dashArray[1] != 0 &&
+  (seriesRendererDetails.dashArray![0] != 0 &&
+          seriesRendererDetails.dashArray![1] != 0 &&
           paint.style != PaintingStyle.fill &&
           seriesRendererDetails.series.animationDuration <= 0)
-      ? drawDashedLine(
-          canvas, seriesRendererDetails.series.dashArray, paint, path)
+      ? drawDashedLine(canvas, seriesRendererDetails.dashArray!, paint, path)
       : canvas.drawPath(path, paint);
   if (paint.style == PaintingStyle.fill) {
     if (transposed) {
@@ -1652,51 +1649,53 @@ List<CartesianChartPoint<dynamic>>? getNearestChartPoints(
         : yValues.add(
             dataList[i].yValue ?? (dataList[i].high + dataList[i].low) / 2);
   }
-  num nearPointX = dataList[0].xValue;
-  num nearPointY = actualYAxisDetails.visibleRange!.minimum;
+  if (dataList.isNotEmpty) {
+    num nearPointX = dataList[0].xValue;
+    num nearPointY = actualYAxisDetails.visibleRange!.minimum;
 
-  final Rect rect = calculatePlotOffset(
-      seriesRendererDetails.stateProperties.chartAxis.axisClipRect,
-      Offset(seriesRendererDetails.xAxisDetails!.axis.plotOffset,
-          seriesRendererDetails.yAxisDetails!.axis.plotOffset));
+    final Rect rect = calculatePlotOffset(
+        seriesRendererDetails.stateProperties.chartAxis.axisClipRect,
+        Offset(seriesRendererDetails.xAxisDetails!.axis.plotOffset,
+            seriesRendererDetails.yAxisDetails!.axis.plotOffset));
 
-  final num touchXValue = pointToXValue(
-      seriesRendererDetails.stateProperties.requireInvertedAxis,
-      actualXAxisRenderer,
-      actualXAxisDetails.axis.isVisible
-          ? actualXAxisDetails.bounds
-          : seriesRendererDetails.stateProperties.chartAxis.axisClipRect,
-      pointX - rect.left,
-      pointY - rect.top);
-  final num touchYValue = pointToYValue(
-      seriesRendererDetails.stateProperties.requireInvertedAxis,
-      actualYAxisRenderer,
-      actualYAxisDetails.axis.isVisible
-          ? actualYAxisDetails.bounds
-          : seriesRendererDetails.stateProperties.chartAxis.axisClipRect,
-      pointX - rect.left,
-      pointY - rect.top);
-  double delta = 0;
-  for (int i = 0; i < dataList.length; i++) {
-    final double currX = xValues[i].toDouble();
-    final double currY = yValues[i].toDouble();
-    if (delta == touchXValue - currX) {
-      final CartesianChartPoint<dynamic> dataPoint = dataList[i];
-      if (dataPoint.isDrop != true && dataPoint.isGap != true) {
-        if ((touchYValue - currY).abs() > (touchYValue - nearPointY).abs()) {
-          dataPointList.clear();
+    final num touchXValue = pointToXValue(
+        seriesRendererDetails.stateProperties.requireInvertedAxis,
+        actualXAxisRenderer,
+        actualXAxisDetails.axis.isVisible
+            ? actualXAxisDetails.bounds
+            : seriesRendererDetails.stateProperties.chartAxis.axisClipRect,
+        pointX - rect.left,
+        pointY - rect.top);
+    final num touchYValue = pointToYValue(
+        seriesRendererDetails.stateProperties.requireInvertedAxis,
+        actualYAxisRenderer,
+        actualYAxisDetails.axis.isVisible
+            ? actualYAxisDetails.bounds
+            : seriesRendererDetails.stateProperties.chartAxis.axisClipRect,
+        pointX - rect.left,
+        pointY - rect.top);
+    double delta = 0;
+    for (int i = 0; i < dataList.length; i++) {
+      final double currX = xValues[i].toDouble();
+      final double currY = yValues[i].toDouble();
+      if (delta == touchXValue - currX) {
+        final CartesianChartPoint<dynamic> dataPoint = dataList[i];
+        if (dataPoint.isDrop != true && dataPoint.isGap != true) {
+          if ((touchYValue - currY).abs() > (touchYValue - nearPointY).abs()) {
+            dataPointList.clear();
+          }
+          dataPointList.add(dataPoint);
         }
-        dataPointList.add(dataPoint);
-      }
-    } else if ((touchXValue - currX).abs() <=
-        (touchXValue - nearPointX).abs()) {
-      nearPointX = currX;
-      nearPointY = currY;
-      delta = touchXValue - currX;
-      final CartesianChartPoint<dynamic> dataPoint = dataList[i];
-      dataPointList.clear();
-      if (dataPoint.isDrop != true && dataPoint.isGap != true) {
-        dataPointList.add(dataPoint);
+      } else if ((touchXValue - currX).abs() <=
+          (touchXValue - nearPointX).abs()) {
+        nearPointX = currX;
+        nearPointY = currY;
+        delta = touchXValue - currX;
+        final CartesianChartPoint<dynamic> dataPoint = dataList[i];
+        dataPointList.clear();
+        if (dataPoint.isDrop != true && dataPoint.isGap != true) {
+          dataPointList.add(dataPoint);
+        }
       }
     }
   }
@@ -2086,3 +2085,10 @@ double _updateDateTimeHorizontalErrorValue(
   }
   return errorXValue.millisecondsSinceEpoch.toDouble();
 }
+
+/// Returns the sampled data for fast line series
+List<CartesianChartPoint<dynamic>> getSampledData(
+        SeriesRendererDetails seriesRendererDetails) =>
+    seriesRendererDetails.seriesType == 'fastline'
+        ? seriesRendererDetails.sampledDataPoints
+        : seriesRendererDetails.dataPoints;

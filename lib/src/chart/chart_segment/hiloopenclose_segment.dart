@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:syncfusion_flutter_charts/charts.dart';
-import 'package:syncfusion_flutter_charts/src/chart/chart_series/series_renderer_properties.dart';
+
+import '../../../charts.dart';
 import '../chart_series/series.dart';
+import '../chart_series/series_renderer_properties.dart';
 import '../chart_series/xy_data_series.dart';
 import '../common/common.dart';
 import '../common/renderer.dart';
@@ -286,9 +287,9 @@ class HiloOpenCloseSegment extends ChartSegment {
                   _segmentProperties.seriesRenderer));
         }
       } else {
-        (_segmentProperties.series.dashArray[0] != 0 &&
-                _segmentProperties.series.dashArray[1] != 0)
-            ? drawDashedLine(canvas, _segmentProperties.series.dashArray,
+        (seriesRendererDetails.dashArray![0] != 0 &&
+                seriesRendererDetails.dashArray![1] != 0)
+            ? drawDashedLine(canvas, seriesRendererDetails.dashArray!,
                 strokePaint!, _drawDashedHiloOpenClosePath(canvas))
             : drawHiloOpenClosePath(canvas);
       }

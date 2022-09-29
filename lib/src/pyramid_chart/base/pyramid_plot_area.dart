@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:syncfusion_flutter_charts/src/common/user_interaction/tooltip_rendering_details.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_core/tooltip_internal.dart';
 
@@ -10,6 +9,7 @@ import '../../circular_chart/renderer/common.dart';
 import '../../common/event_args.dart';
 import '../../common/user_interaction/selection_behavior.dart';
 import '../../common/user_interaction/tooltip.dart';
+import '../../common/user_interaction/tooltip_rendering_details.dart';
 import '../../common/utils/helper.dart';
 import '../../pyramid_chart/utils/common.dart';
 import '../../pyramid_chart/utils/helper.dart';
@@ -135,6 +135,7 @@ class PyramidPlotArea extends StatelessWidget {
     _bindTooltipWidgets(constraints);
     renderBox = context.findRenderObject() as RenderBox;
     stateProperties.chartPlotArea = this;
+    stateProperties.legendRefresh = false;
     // ignore: avoid_unnecessary_containers
     return Container(
         child: Stack(
@@ -193,9 +194,10 @@ class PyramidPlotArea extends StatelessWidget {
           !stateProperties.renderingDetails.didSizeChange &&
           (stateProperties.renderingDetails.deviceOrientation ==
               stateProperties.renderingDetails.oldDeviceOrientation) &&
-          ((!stateProperties.renderingDetails.widgetNeedUpdate &&
-                  stateProperties.renderingDetails.initialRender!) ||
-              stateProperties.renderingDetails.isLegendToggled)) {
+          (((!stateProperties.renderingDetails.widgetNeedUpdate &&
+                      stateProperties.renderingDetails.initialRender!) ||
+                  stateProperties.renderingDetails.isLegendToggled) ||
+              stateProperties.legendRefresh)) {
         final int totalAnimationDuration =
             series.animationDuration.toInt() + series.animationDelay.toInt();
         stateProperties.renderingDetails.animationController.duration =
@@ -209,8 +211,7 @@ class PyramidPlotArea extends StatelessWidget {
         seriesAnimation =
             Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
           parent: stateProperties.renderingDetails.animationController,
-          curve: Interval(minSeriesInterval, maxSeriesInterval,
-              curve: Curves.linear),
+          curve: Interval(minSeriesInterval, maxSeriesInterval),
         )..addStatusListener((AnimationStatus status) {
                 if (status == AnimationStatus.completed) {
                   stateProperties.renderingDetails.animateCompleted = true;
@@ -271,14 +272,14 @@ class PyramidPlotArea extends StatelessWidget {
         stateProperties.renderingDetails.tooltipBehaviorRenderer;
     TooltipHelper.setStateProperties(chart.tooltipBehavior, stateProperties);
     if (tooltip.enable) {
-      final SfChartThemeData _chartTheme =
+      final SfChartThemeData chartTheme =
           stateProperties.renderingDetails.chartTheme;
       final TooltipRenderingDetails tooltipRenderingDetails =
           TooltipHelper.getRenderingDetails(tooltipBehaviorRenderer);
       tooltipRenderingDetails.prevTooltipValue =
           tooltipRenderingDetails.currentTooltipValue = null;
       tooltipRenderingDetails.chartTooltip = SfTooltip(
-          color: tooltip.color ?? _chartTheme.tooltipColor,
+          color: tooltip.color ?? chartTheme.tooltipColor,
           key: GlobalKey(),
           textStyle: tooltip.textStyle,
           animationDuration: tooltip.animationDuration,
@@ -293,7 +294,7 @@ class PyramidPlotArea extends StatelessWidget {
           canShowMarker: tooltip.canShowMarker,
           textAlignment: tooltip.textAlignment,
           decimalPlaces: tooltip.decimalPlaces,
-          labelColor: tooltip.textStyle.color ?? _chartTheme.tooltipLabelColor,
+          labelColor: tooltip.textStyle.color ?? chartTheme.tooltipLabelColor,
           header: tooltip.header,
           format: tooltip.format,
           shadowColor: tooltip.shadowColor,
@@ -401,9 +402,9 @@ class PyramidPlotArea extends StatelessWidget {
           stateProperties.chartSeries.pointExplode(pointIndex);
           final GlobalKey key =
               stateProperties.renderDataLabel!.key as GlobalKey;
-          final PyramidDataLabelRendererState _pyramidDataLabelRendererState =
+          final PyramidDataLabelRendererState pyramidDataLabelRendererState =
               key.currentState as PyramidDataLabelRendererState;
-          _pyramidDataLabelRendererState.dataLabelRepaintNotifier.value++;
+          pyramidDataLabelRendererState.dataLabelRepaintNotifier.value++;
         }
       }
       stateProperties.chartSeries
@@ -457,9 +458,9 @@ class PyramidPlotArea extends StatelessWidget {
           stateProperties.chartSeries.pointExplode(pointIndex);
           final GlobalKey key =
               stateProperties.renderDataLabel!.key as GlobalKey;
-          final PyramidDataLabelRendererState _pyramidDataLabelRendererState =
+          final PyramidDataLabelRendererState pyramidDataLabelRendererState =
               key.currentState as PyramidDataLabelRendererState;
-          _pyramidDataLabelRendererState.dataLabelRepaintNotifier.value++;
+          pyramidDataLabelRendererState.dataLabelRepaintNotifier.value++;
         }
       }
       if (chart.tooltipBehavior.enable &&
@@ -513,9 +514,9 @@ class PyramidPlotArea extends StatelessWidget {
           stateProperties.chartSeries.pointExplode(currentActive.pointIndex!);
           final GlobalKey key =
               stateProperties.renderDataLabel!.key as GlobalKey;
-          final PyramidDataLabelRendererState _pyramidDataLabelRendererState =
+          final PyramidDataLabelRendererState pyramidDataLabelRendererState =
               key.currentState as PyramidDataLabelRendererState;
-          _pyramidDataLabelRendererState.dataLabelRepaintNotifier.value++;
+          pyramidDataLabelRendererState.dataLabelRepaintNotifier.value++;
         }
 
         if (stateProperties

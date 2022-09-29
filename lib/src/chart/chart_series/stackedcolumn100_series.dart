@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:syncfusion_flutter_charts/charts.dart';
+import '../../../charts.dart';
 
 import 'stacked_series_base.dart';
 
@@ -208,7 +208,7 @@ class StackedColumn100Series<T, D> extends StackedSeriesBase<T, D> {
       onPointDoubleTap,
       onPointLongPress
     ];
-    return hashList(values);
+    return Object.hashAll(values);
   }
 
   /// Create the stacked area series renderer.

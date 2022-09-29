@@ -65,16 +65,16 @@ class _RenderTemplateState extends State<RenderTemplate>
     Widget renderWidget;
     if (templateInfo.templateType == 'DataLabel') {
       renderWidget = _ChartTemplateRenderObject(
-          child: templateInfo.widget!,
           templateInfo: templateInfo,
           stateProperties: widget.stateProperties,
-          animationController: animationController);
+          animationController: animationController,
+          child: templateInfo.widget!);
     } else {
       renderWidget = _ChartTemplateRenderObject(
-          child: templateInfo.widget!,
           templateInfo: templateInfo,
           stateProperties: widget.stateProperties,
-          animationController: animationController);
+          animationController: animationController,
+          child: templateInfo.widget!);
     }
     if (templateInfo.animationDuration > 0) {
       final dynamic stateProperties = widget.stateProperties;
@@ -105,9 +105,9 @@ class _RenderTemplateState extends State<RenderTemplate>
       currentWidget = AnimatedBuilder(
           animation: animationController!,
           child: renderWidget,
-          builder: (BuildContext context, Widget? _widget) {
+          builder: (BuildContext context, Widget? widget) {
             final double value = needsAnimate ? animationController!.value : 1;
-            return Opacity(opacity: value * 1.0, child: _widget);
+            return Opacity(opacity: value * 1.0, child: widget);
           });
     } else {
       currentWidget = renderWidget;
@@ -243,16 +243,8 @@ class _ChartTemplateRenderBox extends RenderShiftedBox {
               }
 
               seriesRendererDetails.setSeriesProperties(seriesRendererDetails);
-              seriesRendererDetails.calculateRegionData(
-                  stateProperties,
-                  seriesRendererDetails,
-                  0,
-                  point,
-                  _templateInfo.pointIndex!,
-                  null,
-                  null,
-                  null,
-                  null);
+              seriesRendererDetails.calculateRegionData(stateProperties,
+                  seriesRendererDetails, 0, point, _templateInfo.pointIndex!);
             }
             calculateDataLabelPosition(
                 seriesRendererDetails,
@@ -283,7 +275,10 @@ class _ChartTemplateRenderBox extends RenderShiftedBox {
               : stateProperties.annotationRegions.add(rect);
           childParentData.offset = Offset(locationX, locationY);
         } else {
-          childParentData.offset = Offset.infinite;
+          if (child != null && child!.size != Size.zero) {
+            child!.layout(constraints.copyWith(maxWidth: 0, maxHeight: 0),
+                parentUsesSize: true);
+          }
         }
       }
     } else {

@@ -7,6 +7,7 @@
 /// * [Syncfusion Flutter Charts product page](https://www.syncfusion.com/flutter-widgets/flutter-spark-charts)
 /// * [User guide documentation](https://help.syncfusion.com/flutter/sparkcharts/overview)
 /// * [Knowledge base](https://www.syncfusion.com/kb/flutter/sfsparklinechart)
+
 library sparkcharts;
 
 // export spark chart library

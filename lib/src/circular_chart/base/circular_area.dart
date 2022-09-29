@@ -1,13 +1,14 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:syncfusion_flutter_charts/charts.dart';
-import 'package:syncfusion_flutter_charts/src/common/user_interaction/tooltip_rendering_details.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_core/tooltip_internal.dart';
+
+import '../../../charts.dart';
 import '../../chart/user_interaction/selection_renderer.dart';
 import '../../common/template/rendering.dart';
 import '../../common/user_interaction/selection_behavior.dart';
 import '../../common/user_interaction/tooltip.dart';
+import '../../common/user_interaction/tooltip_rendering_details.dart';
 import '../../common/utils/helper.dart';
 import '../renderer/common.dart';
 import '../renderer/data_label_renderer.dart';
@@ -73,6 +74,7 @@ class CircularArea extends StatelessWidget {
               onPointerMove: (PointerMoveEvent event) =>
                   _performPointerMove(event),
               child: GestureDetector(
+                  onTap: _onTap,
                   onLongPress: _onLongPress,
                   onTapUp: (TapUpDetails details) {
                     if (chart.series[0].onPointTap != null &&
@@ -85,12 +87,22 @@ class CircularArea extends StatelessWidget {
                   child: Container(
                     height: constraints.maxHeight,
                     width: constraints.maxWidth,
-                    child: _initializeChart(constraints, context),
                     decoration: const BoxDecoration(color: Colors.transparent),
+                    child: _initializeChart(constraints, context),
                   )),
             )),
       );
     });
+  }
+
+  /// To perform tap touch interactions.
+  void _onTap() {
+    if (stateProperties.renderingDetails.currentActive != null &&
+        stateProperties.renderingDetails.currentActive!.series != null &&
+        stateProperties.renderingDetails.currentActive!.series.explodeGesture ==
+            ActivationMode.singleTap) {
+      stateProperties.chartSeries.seriesPointExplosion(pointRegion);
+    }
   }
 
   /// To perform the pointer down event.
@@ -247,15 +259,6 @@ class CircularArea extends StatelessWidget {
           stateProperties.renderingDetails.tapPosition);
     }
     if (stateProperties.renderingDetails.tapPosition != null) {
-      if (stateProperties.renderingDetails.currentActive != null &&
-          stateProperties.renderingDetails.currentActive!.series != null &&
-          stateProperties
-                  .renderingDetails.currentActive!.series.explodeGesture ==
-              ActivationMode.singleTap) {
-        stateProperties.chartSeries.seriesPointExplosion(
-            stateProperties.renderingDetails.currentActive!.region);
-      }
-
       if (stateProperties.renderingDetails.tapPosition != null &&
           stateProperties.renderingDetails.currentActive != null) {
         stateProperties.chartSeries.seriesPointSelection(
@@ -428,6 +431,7 @@ class CircularArea extends StatelessWidget {
     _renderTemplates();
     _bindTooltipWidgets(constraints);
     stateProperties.circularArea = this;
+    stateProperties.legendRefresh = false;
     renderBox = context.findRenderObject() as RenderBox;
     // ignore: avoid_unnecessary_containers
     return Container(
@@ -464,9 +468,14 @@ class CircularArea extends StatelessWidget {
             labelWidget = series.dataLabelSettings.builder!(
                 series.dataSource![i], point, series, i, k);
             if (series.dataLabelSettings.labelPosition ==
-                ChartDataLabelPosition.inside) {
-              labelLocation = degreeToPoint(point.midAngle!,
-                  (point.innerRadius! + point.outerRadius!) / 2, point.center!);
+                    ChartDataLabelPosition.inside ||
+                seriesRenderer.seriesType == 'radialbar') {
+              labelLocation = degreeToPoint(
+                  seriesRenderer.seriesType == 'radialbar'
+                      ? point.startAngle!
+                      : point.midAngle!,
+                  (point.innerRadius! + point.outerRadius!) / 2,
+                  point.center!);
               labelLocation = Offset(labelLocation.dx, labelLocation.dy);
               labelAlign = ChartAlignment.center;
             } else {
@@ -488,7 +497,6 @@ class CircularArea extends StatelessWidget {
                 templateType: 'DataLabel',
                 pointIndex: i,
                 seriesIndex: k,
-                needMeasure: true,
                 clipRect: stateProperties.renderingDetails.chartAreaRect,
                 animationDuration: 500,
                 widget: labelWidget,
@@ -527,7 +535,6 @@ class CircularArea extends StatelessWidget {
           templateInfo = ChartTemplateInfo(
               key: GlobalKey(),
               templateType: 'Annotation',
-              needMeasure: true,
               horizontalAlignment: annotation.horizontalAlignment,
               verticalAlignment: annotation.verticalAlignment,
               clipRect: stateProperties.renderingDetails.chartContainerRect,
@@ -570,7 +577,7 @@ class CircularArea extends StatelessWidget {
   /// To add tooltip widgets to chart.
   void _bindTooltipWidgets(BoxConstraints constraints) {
     TooltipHelper.setStateProperties(chart.tooltipBehavior, stateProperties);
-    final SfChartThemeData _chartTheme =
+    final SfChartThemeData chartTheme =
         stateProperties.renderingDetails.chartTheme;
     const int seriesIndex = 0;
     final DataLabelSettings dataLabel = stateProperties.chartSeries
@@ -585,7 +592,7 @@ class CircularArea extends StatelessWidget {
       tooltipRenderingDetails.prevTooltipValue =
           tooltipRenderingDetails.currentTooltipValue = null;
       tooltipRenderingDetails.chartTooltip = SfTooltip(
-          color: tooltip.color ?? _chartTheme.tooltipColor,
+          color: tooltip.color ?? chartTheme.tooltipColor,
           key: GlobalKey(),
           textStyle: tooltip.textStyle,
           animationDuration: tooltip.animationDuration,
@@ -600,7 +607,7 @@ class CircularArea extends StatelessWidget {
           canShowMarker: tooltip.canShowMarker,
           textAlignment: tooltip.textAlignment,
           decimalPlaces: tooltip.decimalPlaces,
-          labelColor: tooltip.textStyle.color ?? _chartTheme.tooltipLabelColor,
+          labelColor: tooltip.textStyle.color ?? chartTheme.tooltipLabelColor,
           header: tooltip.header,
           format: tooltip.format,
           shadowColor: tooltip.shadowColor,
@@ -608,7 +615,6 @@ class CircularArea extends StatelessWidget {
               ? tooltipRenderingDetails.tooltipRenderingEvent
               : null);
       final Widget uiWidget = IgnorePointer(
-          ignoring: true,
           child:
               Stack(children: <Widget>[tooltipRenderingDetails.chartTooltip!]));
       stateProperties.renderingDetails.chartWidgets!.add(uiWidget);
@@ -656,10 +662,11 @@ class CircularArea extends StatelessWidget {
           !stateProperties.renderingDetails.didSizeChange &&
           (stateProperties.renderingDetails.oldDeviceOrientation ==
               stateProperties.renderingDetails.deviceOrientation) &&
-          (stateProperties.renderingDetails.initialRender! ||
-              (stateProperties.renderingDetails.widgetNeedUpdate &&
-                  seriesRenderer.needsAnimation) ||
-              stateProperties.renderingDetails.isLegendToggled)) {
+          ((stateProperties.renderingDetails.initialRender! ||
+                  (stateProperties.renderingDetails.widgetNeedUpdate &&
+                      seriesRenderer.needsAnimation) ||
+                  stateProperties.renderingDetails.isLegendToggled) ||
+              stateProperties.legendRefresh)) {
         final int totalAnimationDuration =
             series.animationDuration.toInt() + series.animationDelay.toInt();
         stateProperties.renderingDetails.animationController.duration =
@@ -673,8 +680,7 @@ class CircularArea extends StatelessWidget {
         seriesAnimation =
             Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
           parent: stateProperties.renderingDetails.animationController,
-          curve: Interval(minSeriesInterval, maxSeriesInterval,
-              curve: Curves.linear),
+          curve: Interval(minSeriesInterval, maxSeriesInterval),
         )..addStatusListener((AnimationStatus status) {
                 if (status == AnimationStatus.completed) {
                   stateProperties.renderingDetails.animateCompleted = true;

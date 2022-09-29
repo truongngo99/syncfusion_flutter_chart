@@ -355,7 +355,7 @@ class LogarithmicAxis extends ChartAxis {
       autoScrollingMode,
       axisLabelFormatter
     ];
-    return hashList(values);
+    return Object.hashAll(values);
   }
 }
 
@@ -392,7 +392,8 @@ class LogarithmicAxisRenderer extends ChartAxisRenderer {
       _axisDetails.updateAutoScrollingDelta(
           _axisDetails.logarithmicAxis.autoScrollingDelta!, this);
     }
-    if ((!canAutoScroll || _axisDetails.stateProperties.zoomedState == true) &&
+    if ((!canAutoScroll ||
+            (_axisDetails.stateProperties.zoomedState ?? false)) &&
         !(_axisDetails.stateProperties.rangeChangeBySlider &&
             !_axisDetails.stateProperties.canSetRangeController)) {
       _axisDetails.setZoomFactorAndPosition(

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:syncfusion_flutter_charts/charts.dart';
+import '../../../charts.dart';
 
 /// This class holds the properties of the box and whisker series.
 ///
@@ -273,7 +273,7 @@ class BoxAndWhiskerSeries<T, D> extends XyDataSeries<T, D> {
       onPointDoubleTap,
       onPointLongPress
     ];
-    return hashList(values);
+    return Object.hashAll(values);
   }
 }
 

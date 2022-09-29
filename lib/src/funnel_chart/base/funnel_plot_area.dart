@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:syncfusion_flutter_charts/src/common/user_interaction/tooltip_rendering_details.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_core/tooltip_internal.dart';
 
@@ -10,6 +9,7 @@ import '../../circular_chart/renderer/common.dart';
 import '../../common/event_args.dart';
 import '../../common/user_interaction/selection_behavior.dart';
 import '../../common/user_interaction/tooltip.dart';
+import '../../common/user_interaction/tooltip_rendering_details.dart';
 import '../../common/utils/helper.dart';
 import '../../pyramid_chart/utils/common.dart';
 import '../../pyramid_chart/utils/helper.dart';
@@ -129,6 +129,7 @@ class FunnelPlotArea extends StatelessWidget {
     _bindTooltipWidgets(constraints);
     renderBox = context.findRenderObject() as RenderBox;
     stateProperties.funnelplotArea = this;
+    stateProperties.legendRefresh = false;
     // ignore: avoid_unnecessary_containers
     return Container(
         child: Stack(
@@ -189,9 +190,10 @@ class FunnelPlotArea extends StatelessWidget {
           !stateProperties.renderingDetails.didSizeChange &&
           (stateProperties.renderingDetails.oldDeviceOrientation ==
               stateProperties.renderingDetails.deviceOrientation) &&
-          ((!stateProperties.renderingDetails.widgetNeedUpdate &&
-                  stateProperties.renderingDetails.initialRender!) ||
-              stateProperties.renderingDetails.isLegendToggled)) {
+          (((!stateProperties.renderingDetails.widgetNeedUpdate &&
+                      stateProperties.renderingDetails.initialRender!) ||
+                  stateProperties.renderingDetails.isLegendToggled) ||
+              stateProperties.legendRefresh)) {
         final int totalAnimationDuration =
             series.animationDuration.toInt() + series.animationDelay.toInt();
         stateProperties.renderingDetails.animationController.duration =
@@ -205,8 +207,7 @@ class FunnelPlotArea extends StatelessWidget {
         seriesAnimation =
             Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
           parent: stateProperties.renderingDetails.animationController,
-          curve: Interval(minSeriesInterval, maxSeriesInterval,
-              curve: Curves.linear),
+          curve: Interval(minSeriesInterval, maxSeriesInterval),
         )..addStatusListener((AnimationStatus status) {
                 if (status == AnimationStatus.completed) {
                   stateProperties.renderingDetails.animateCompleted = true;
@@ -261,7 +262,7 @@ class FunnelPlotArea extends StatelessWidget {
   /// To bind tooltip widgets to chart.
   void _bindTooltipWidgets(BoxConstraints constraints) {
     TooltipHelper.setStateProperties(chart.tooltipBehavior, stateProperties);
-    final SfChartThemeData _chartTheme =
+    final SfChartThemeData chartTheme =
         stateProperties.renderingDetails.chartTheme;
     final TooltipBehavior tooltip = chart.tooltipBehavior;
     final TooltipRenderingDetails tooltipRenderingDetails =
@@ -271,7 +272,7 @@ class FunnelPlotArea extends StatelessWidget {
       tooltipRenderingDetails.prevTooltipValue =
           tooltipRenderingDetails.currentTooltipValue = null;
       tooltipRenderingDetails.chartTooltip = SfTooltip(
-          color: tooltip.color ?? _chartTheme.tooltipColor,
+          color: tooltip.color ?? chartTheme.tooltipColor,
           key: GlobalKey(),
           textStyle: tooltip.textStyle,
           animationDuration: tooltip.animationDuration,
@@ -286,7 +287,7 @@ class FunnelPlotArea extends StatelessWidget {
           canShowMarker: tooltip.canShowMarker,
           textAlignment: tooltip.textAlignment,
           decimalPlaces: tooltip.decimalPlaces,
-          labelColor: tooltip.textStyle.color ?? _chartTheme.tooltipLabelColor,
+          labelColor: tooltip.textStyle.color ?? chartTheme.tooltipLabelColor,
           header: tooltip.header,
           format: tooltip.format,
           shadowColor: tooltip.shadowColor,
@@ -395,9 +396,9 @@ class FunnelPlotArea extends StatelessWidget {
           stateProperties.chartSeries.pointExplode(pointIndex);
           final GlobalKey key =
               stateProperties.renderDataLabel!.key as GlobalKey;
-          final FunnelDataLabelRendererState _funnelDataLabelRendererState =
+          final FunnelDataLabelRendererState funnelDataLabelRendererState =
               key.currentState as FunnelDataLabelRendererState;
-          _funnelDataLabelRendererState.dataLabelRepaintNotifier.value++;
+          funnelDataLabelRendererState.dataLabelRepaintNotifier.value++;
         }
       }
       stateProperties.chartSeries
@@ -451,9 +452,9 @@ class FunnelPlotArea extends StatelessWidget {
           stateProperties.chartSeries.pointExplode(pointIndex);
           final GlobalKey key =
               stateProperties.renderDataLabel!.key as GlobalKey;
-          final FunnelDataLabelRendererState _funnelDataLabelRendererState =
+          final FunnelDataLabelRendererState funnelDataLabelRendererState =
               key.currentState as FunnelDataLabelRendererState;
-          _funnelDataLabelRendererState.dataLabelRepaintNotifier.value++;
+          funnelDataLabelRendererState.dataLabelRepaintNotifier.value++;
         }
       }
       if (chart.tooltipBehavior.enable &&
@@ -495,9 +496,9 @@ class FunnelPlotArea extends StatelessWidget {
         stateProperties.chartSeries.pointExplode(
             stateProperties.renderingDetails.currentActive!.pointIndex!);
         final GlobalKey key = stateProperties.renderDataLabel!.key as GlobalKey;
-        final FunnelDataLabelRendererState _funnelDataLabelRendererState =
+        final FunnelDataLabelRendererState funnelDataLabelRendererState =
             key.currentState as FunnelDataLabelRendererState;
-        _funnelDataLabelRendererState.dataLabelRepaintNotifier.value++;
+        funnelDataLabelRendererState.dataLabelRepaintNotifier.value++;
       }
       if (stateProperties.renderingDetails.tapPosition != null &&
           stateProperties.renderingDetails.currentActive != null) {

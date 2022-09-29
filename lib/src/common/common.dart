@@ -31,15 +31,10 @@ class _ChartContainerBox extends RenderShiftedBox {
     if (width == double.infinity) {
       width = minWidth;
     }
-    child!.layout(
-        BoxConstraints(
-          minHeight: 0.0,
-          maxHeight: height,
-          minWidth: 0.0,
-          maxWidth: width,
-        ),
-        parentUsesSize:
-            false); // True- Parent widget recomputes again respect to every build of child widget, False- Parent widget not rebuild respect to child widget build
+    child!.layout(BoxConstraints(
+      maxHeight: height,
+      maxWidth: width,
+    )); // True- Parent widget recomputes again respect to every build of child widget, False- Parent widget not rebuild respect to child widget build
     size = Size(width,
         height); // constraints.maxHeight become infinity when widget is placed inside row/column
   }
@@ -217,7 +212,7 @@ class ChartTitle {
       borderWidth,
       backgroundColor
     ];
-    return hashList(values);
+    return Object.hashAll(values);
   }
 }
 
@@ -248,6 +243,7 @@ class Legend {
       double? padding,
       double? iconHeight,
       double? iconWidth,
+      bool? shouldAlwaysShowScrollbar,
       bool? toggleSeriesVisibility,
       TextStyle? textStyle,
       bool? isResponsive,
@@ -261,6 +257,7 @@ class Legend {
       this.offset,
       this.image})
       : isVisible = isVisible ?? false,
+        shouldAlwaysShowScrollbar = shouldAlwaysShowScrollbar ?? false,
         position = position ?? LegendPosition.auto,
         alignment = alignment ?? ChartAlignment.center,
         borderColor = borderColor ?? Colors.transparent,
@@ -359,6 +356,23 @@ class Legend {
   /// }
   ///```
   final Color? backgroundColor;
+
+  ///Toggles the scrollbar visibility.
+  ///
+  ///When set to false, the scrollbar appears only when scrolling else the scrollbar fades out. When true, the
+  ///scrollbar will never fade out and will always be visible when the items are overflown.
+  ///
+  ///Defaults to `false`.
+  ///
+  ///```dart
+  /// SfCartesianChart(
+  ///            legend:Legend(
+  ///              isVisible: true,
+  ///               shouldAlwaysShowScrollbar: true
+  ///             )
+  ///           )
+  ///```
+  final bool shouldAlwaysShowScrollbar;
 
   /// Border color of the legend.
   ///
@@ -806,7 +820,7 @@ class Legend {
       itemPadding,
       image
     ];
-    return hashList(values);
+    return Object.hashAll(values);
   }
 }
 
@@ -954,7 +968,7 @@ class LegendTitle {
   @override
   int get hashCode {
     final List<Object?> values = <Object?>[text, textStyle, alignment];
-    return hashList(values);
+    return Object.hashAll(values);
   }
 }
 
@@ -1086,6 +1100,6 @@ class EmptyPointSettings {
       borderColor,
       borderWidth
     ];
-    return hashList(values);
+    return Object.hashAll(values);
   }
 }
