@@ -43,6 +43,12 @@ class TooltipArgs {
   final num? viewportPointIndex;
 }
 
+/// Holds the `onActualRangeChanged` event arguments.
+///
+/// ActualRangeChangedArgs is the type argument for `onActualRangeChanged` event. Whenever the actual range is changed, the `onActualRangeChanged` event is
+/// triggered and provides options to set the visible minimum and maximum values.
+///
+/// It has the public properties of axis name, axis type, actual minimum, and maximum, visible minimum and maximum and axis orientation.
 /// Holds the onAxisLabelRender event arguments.
 ///
 /// AxisLabelRenderArgs is the type argument for onAxisLabelRender event. Whenever the axis gets rendered, the onAxisLabelRender event is
@@ -80,12 +86,6 @@ class AxisLabelRenderArgs {
       fontSize: 12);
 }
 
-/// Holds the `onActualRangeChanged` event arguments.
-///
-/// ActualRangeChangedArgs is the type argument for `onActualRangeChanged` event. Whenever the actual range is changed, the `onActualRangeChanged` event is
-/// triggered and provides options to set the visible minimum and maximum values.
-///
-/// It has the public properties of axis name, axis type, actual minimum, and maximum, visible minimum and maximum and axis orientation.
 class ActualRangeChangedArgs {
   /// Creating an argument constructor of ActualRangeChangedArgs class.
   ActualRangeChangedArgs(

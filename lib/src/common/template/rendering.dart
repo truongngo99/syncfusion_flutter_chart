@@ -7,6 +7,7 @@ import '../../chart/common/cartesian_state_properties.dart';
 import '../../chart/common/data_label.dart';
 import '../../chart/common/data_label_renderer.dart';
 import '../../chart/utils/helper.dart';
+import '../../circular_chart/base/circular_state_properties.dart';
 import '../state_properties.dart';
 
 import '../utils/enum.dart';
@@ -65,16 +66,19 @@ class _RenderTemplateState extends State<RenderTemplate>
     Widget renderWidget;
     if (templateInfo.templateType == 'DataLabel') {
       renderWidget = _ChartTemplateRenderObject(
-          child: templateInfo.widget!,
           templateInfo: templateInfo,
           stateProperties: widget.stateProperties,
-          animationController: animationController);
+          animationController: animationController,
+          child: templateInfo.widget!);
     } else {
-      renderWidget = _ChartTemplateRenderObject(
-          child: templateInfo.widget!,
-          templateInfo: templateInfo,
-          stateProperties: widget.stateProperties,
-          animationController: animationController);
+      renderWidget = templateInfo.templateType == 'Annotation' &&
+              widget.stateProperties is! CircularStateProperties
+          ? templateInfo.widget!
+          : _ChartTemplateRenderObject(
+              templateInfo: templateInfo,
+              stateProperties: widget.stateProperties,
+              animationController: animationController,
+              child: templateInfo.widget!);
     }
     if (templateInfo.animationDuration > 0) {
       final dynamic stateProperties = widget.stateProperties;
@@ -105,14 +109,34 @@ class _RenderTemplateState extends State<RenderTemplate>
       currentWidget = AnimatedBuilder(
           animation: animationController!,
           child: renderWidget,
-          builder: (BuildContext context, Widget? _widget) {
+          builder: (BuildContext context, Widget? widget) {
             final double value = needsAnimate ? animationController!.value : 1;
-            return Opacity(opacity: value * 1.0, child: _widget);
+            return Opacity(opacity: value * 1.0, child: widget);
           });
     } else {
       currentWidget = renderWidget;
     }
-    return currentWidget;
+    return templateInfo.templateType != 'Annotation' ||
+            widget.stateProperties is CircularStateProperties
+        ? currentWidget
+        : Positioned(
+            left: templateInfo.location.dx,
+            top: templateInfo.location.dy,
+            child: FractionalTranslation(
+                translation: Offset(
+                    templateInfo.horizontalAlignment == ChartAlignment.near
+                        ? 0
+                        : templateInfo.horizontalAlignment ==
+                                ChartAlignment.center
+                            ? -0.5
+                            : -1,
+                    templateInfo.verticalAlignment == ChartAlignment.near
+                        ? 0
+                        : templateInfo.verticalAlignment ==
+                                ChartAlignment.center
+                            ? -0.5
+                            : -1),
+                child: currentWidget));
   }
 
   @override
@@ -243,16 +267,8 @@ class _ChartTemplateRenderBox extends RenderShiftedBox {
               }
 
               seriesRendererDetails.setSeriesProperties(seriesRendererDetails);
-              seriesRendererDetails.calculateRegionData(
-                  stateProperties,
-                  seriesRendererDetails,
-                  0,
-                  point,
-                  _templateInfo.pointIndex!,
-                  null,
-                  null,
-                  null,
-                  null);
+              seriesRendererDetails.calculateRegionData(stateProperties,
+                  seriesRendererDetails, 0, point, _templateInfo.pointIndex!);
             }
             calculateDataLabelPosition(
                 seriesRendererDetails,
