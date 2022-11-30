@@ -179,7 +179,7 @@ class StackedLineChartPainter extends CustomPainter {
         seriesRendererDetails,
         seriesRendererDetails.seriesAnimation,
         stateProperties,
-        seriesRendererDetails.seriesElementAnimation!,
+        seriesRendererDetails.seriesElementAnimation,
         painterKey);
   }
 
@@ -349,7 +349,7 @@ class StackedLine100ChartPainter extends CustomPainter {
         seriesRendererDetails,
         seriesRendererDetails.seriesAnimation,
         stateProperties,
-        seriesRendererDetails.seriesElementAnimation!,
+        seriesRendererDetails.seriesElementAnimation,
         painterKey);
   }
 
@@ -364,7 +364,7 @@ void _stackedLinePainter(
     SeriesRendererDetails seriesRendererDetails,
     Animation<double>? seriesAnimation,
     CartesianStateProperties stateProperties,
-    Animation<double> chartElementAnimation,
+    Animation<double>? chartElementAnimation,
     PainterKey painterKey) {
   Rect clipRect;
   double animationFactor;

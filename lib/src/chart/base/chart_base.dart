@@ -82,9 +82,6 @@ import '../user_interaction/zooming_panning.dart';
 import '../utils/enum.dart';
 import '../utils/helper.dart';
 
-typedef ChartAxisLabelRenderCallBack = void Function(
-    AxisLabelRenderArgs axisLabelRenderArgs);
-
 /// Renders the Cartesian type charts.
 ///
 /// Cartesian charts are generally charts with horizontal and vertical axes.[SfCartesianChart] provides options to customize
@@ -161,7 +158,6 @@ class SfCartesianChart extends StatefulWidget {
   /// Creating an argument constructor of SfCartesianChart class.
   SfCartesianChart(
       {Key? key,
-      this.onAxisLabelRender,
       this.backgroundColor,
       this.enableSideBySideSeriesPlacement = true,
       this.borderColor = Colors.transparent,
@@ -254,8 +250,6 @@ class SfCartesianChart extends StatefulWidget {
   ///}
   ///```
   final ChartTitle title;
-
-  final ChartAxisLabelRenderCallBack? onAxisLabelRender;
 
   /// Customizes the legend in the chart.
   ///
@@ -992,33 +986,6 @@ class SfCartesianChart extends StatefulWidget {
   ///```
   final ImageProvider? plotAreaBackgroundImage;
 
-  /// Data points or series can be selected while performing interaction on the chart.
-  /// It can also be selected at the initial rendering using this property.
-  ///
-  ///
-  ///```dart
-  ///SelectionBehavior _selectionBehavior;
-  ///
-  ///@override
-  ///void initState() {
-  ///  _selectionBehavior = SelectionBehavior( enable: true);
-  ///  super.initState();
-  /// }
-  ///
-  ///Widget build(BuildContext context) {
-  ///    return Container(
-  ///        child: SfCartesianChart(
-  ///           series: <BarSeries<SalesData, num>>[
-  ///                BarSeries<SalesData, num>(
-  ///                 initialSelectedDataIndexes: <int>[2, 0],
-  ///                  selectionBehavior: _selectionBehavior
-  ///                ),
-  ///              ],
-  ///        )
-  ///     );
-  ///}
-  ///```
-
   /// By setting this, the orientation of x-axis is set to vertical and orientation of
   /// y-axis is set to horizontal.
   ///
@@ -1662,6 +1629,12 @@ class SfCartesianChartState extends State<SfCartesianChart>
         seriesRendererDetails.visible = null;
         seriesRendererDetails.chart = widget;
         seriesRendererDetails.hasDataLabelTemplate = false;
+        if (series.dashArray != null) {
+          seriesRendererDetails.dashArray = series.dashArray;
+          if (seriesRendererDetails.dashArray!.length == 1) {
+            seriesRendererDetails.dashArray!.add(series.dashArray[0]);
+          }
+        }
 
         if (oldWidgetSeriesRenderers != null &&
             oldSeriesIndex != null &&
@@ -1950,7 +1923,8 @@ class SfCartesianChartState extends State<SfCartesianChart>
         }
       }
       if (_stateProperties.renderingDetails.initialRender! ||
-          (_stateProperties.renderingDetails.widgetNeedUpdate &&
+          ((_stateProperties.renderingDetails.widgetNeedUpdate ||
+                  _stateProperties.isRedrawByZoomPan) &&
               !_stateProperties.legendToggling &&
               (_stateProperties.renderingDetails.oldDeviceOrientation ==
                   MediaQuery.of(context).orientation))) {
@@ -1963,10 +1937,6 @@ class SfCartesianChartState extends State<SfCartesianChart>
                 seriesRendererDetails.series.isVisible)) {
           legendCheck = true;
         } else {
-          if (_stateProperties.renderingDetails.legendToggleStates.isNotEmpty) {
-            _stateProperties.renderingDetails.legendToggleStates.clear();
-          }
-
           seriesRendererDetails.visible =
               _stateProperties.renderingDetails.initialRender!
                   ? seriesRendererDetails.series.isVisible
@@ -2040,7 +2010,7 @@ class SfCartesianChartState extends State<SfCartesianChart>
                               null &&
                           _stateProperties.renderingDetails.chartLegend
                               .legendCollections!.isNotEmpty
-                      ? _getLegendItemCollection(index)!.text
+                      ? _getLegendItemCollection(index)?.text
                       : null;
 
           final String? seriesName = visibleSeriesDetails.series.name;
@@ -3066,9 +3036,9 @@ class ContainerArea extends StatelessWidget {
       seriesRenderer = _stateProperties.chartSeries.visibleSeriesRenderers[i];
       final SeriesRendererDetails seriesRendererDetails =
           SeriesHelper.getSeriesRendererDetails(seriesRenderer);
+      final String seriesType = seriesRendererDetails.seriesType;
       final List<CartesianChartPoint<dynamic>> dataPoints =
           getSampledData(seriesRendererDetails);
-      final String seriesType = seriesRendererDetails.seriesType;
       if (seriesType == 'column' ||
           seriesType == 'bar' ||
           seriesType == 'scatter' ||
@@ -3282,6 +3252,13 @@ class ContainerArea extends StatelessWidget {
 
       trackballRenderingDetails.isLongPressActivated = false;
     }
+
+    if (chart.trackballBehavior.enable &&
+        chart.trackballBehavior.activationMode == ActivationMode.singleTap &&
+        chart.trackballBehavior.builder != null) {
+      trackballRenderingDetails.isMoving = false;
+    }
+
     // ignore: unnecessary_null_comparison
     if ((chart.crosshairBehavior != null &&
             chart.crosshairBehavior.enable &&
@@ -3346,7 +3323,9 @@ class ContainerArea extends StatelessWidget {
         axisDetails.zoomFactor = zoomEndArgs.currentZoomFactor;
         axisDetails.zoomPosition = zoomEndArgs.currentZoomPosition;
       }
-      if (axisDetails.zoomFactor.toInt() == 1 &&
+      if (!axisDetails.zoomFactor.isNaN &&
+          !axisDetails.zoomFactor.isInfinite &&
+          axisDetails.zoomFactor.toInt() == 1 &&
           axisDetails.zoomPosition.toInt() == 0 &&
           chart.onZoomReset != null) {
         resetFlag = true;
@@ -3523,9 +3502,10 @@ class ContainerArea extends StatelessWidget {
     // ignore: unnecessary_null_comparison
     if ((chart.trackballBehavior != null &&
             chart.trackballBehavior.enable == true &&
+            _findSeries(position!) != null &&
             chart.trackballBehavior.activationMode ==
                 ActivationMode.longPress) &&
-        SeriesHelper.getSeriesRendererDetails(_findSeries(position!)!).series
+        SeriesHelper.getSeriesRendererDetails(_findSeries(position)!).series
             is! ErrorBarSeries &&
         // ignore: unnecessary_null_comparison
         position != null &&

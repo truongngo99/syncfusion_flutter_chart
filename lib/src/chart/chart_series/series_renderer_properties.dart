@@ -221,9 +221,6 @@ class SeriesRendererDetails {
   /// Store the rect position
   late num rectPosition;
 
-  /// Store the rect count
-  late num rectCount;
-
   /// Represents the old series renderer
   List<CartesianSeriesRenderer>? oldSeriesRenderers;
 
@@ -260,6 +257,12 @@ class SeriesRendererDetails {
 
   /// Specifies whether the series is line type
   final bool isLineType = false;
+
+  /// Specifies the dashArray for the series
+  List<double>? dashArray;
+
+  /// Specifies whether the fast line series data points contains null or empty points
+  bool containsEmptyPoints = false;
 
   /// Holds the collection of Cartesian overall data points
   // ignore: prefer_final_fields

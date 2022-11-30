@@ -1127,7 +1127,7 @@ class AxisLabel {
       renderText,
       value
     ];
-    return hashList(values);
+    return Object.hashAll(values);
   }
 
   List<String>? _labelCollection;
@@ -1227,7 +1227,7 @@ class MajorTickLines {
   @override
   int get hashCode {
     final List<Object?> values = <Object?>[size, width, color];
-    return hashList(values);
+    return Object.hashAll(values);
   }
 }
 
@@ -1321,7 +1321,7 @@ class MinorTickLines {
   @override
   int get hashCode {
     final List<Object?> values = <Object?>[size, width, color];
-    return hashList(values);
+    return Object.hashAll(values);
   }
 }
 
@@ -1412,7 +1412,7 @@ class MajorGridLines {
   @override
   int get hashCode {
     final List<Object?> values = <Object?>[dashArray, width, color];
-    return hashList(values);
+    return Object.hashAll(values);
   }
 }
 
@@ -1505,7 +1505,7 @@ class MinorGridLines {
   @override
   int get hashCode {
     final List<Object?> values = <Object?>[dashArray, width, color];
-    return hashList(values);
+    return Object.hashAll(values);
   }
 }
 
@@ -1613,7 +1613,7 @@ class AxisTitle {
   @override
   int get hashCode {
     final List<Object?> values = <Object?>[text, textStyle, alignment];
-    return hashList(values);
+    return Object.hashAll(values);
   }
 }
 
@@ -1701,7 +1701,7 @@ class AxisLine {
   @override
   int get hashCode {
     final List<Object?> values = <Object?>[dashArray, width, color];
-    return hashList(values);
+    return Object.hashAll(values);
   }
 }
 
@@ -2425,8 +2425,16 @@ class ChartAxisRendererDetails {
 
   /// To get the label collection
   List<String> _gettingLabelCollection(
-      String currentLabel, num labelsExtent, ChartAxisRenderer axisRenderer) {
-    final List<String> textCollection = currentLabel.split(RegExp(' '));
+      String currentLabel,
+      num labelsExtent,
+      ChartAxisRenderer axisRenderer,
+      AxisLabelIntersectAction labelIntersectAction) {
+    late List<String> textCollection = <String>[];
+    if (labelIntersectAction == AxisLabelIntersectAction.wrap) {
+      textCollection = currentLabel.split(RegExp(' '));
+    } else {
+      textCollection.add(currentLabel);
+    }
     final List<String> labelCollection = <String>[];
     String text;
     for (int i = 0; i < textCollection.length; i++) {
@@ -3528,13 +3536,20 @@ class ChartAxisRendererDetails {
   }
 
   /// To trigger the render label event
-  void triggerLabelRenderEvent(String labelText, num labelValue) {
+  void triggerLabelRenderEvent(String labelText, num labelValue,
+      [DateTimeIntervalType? currentDateTimeIntervalType,
+      String? currentDateFormat]) {
     TextStyle fontStyle = axis.labelStyle;
     final String actualText = labelText;
     String renderText = actualText;
     String? eventActualText;
-    final AxisLabelRenderDetails axisLabelDetails =
-        AxisLabelRenderDetails(labelValue, actualText, fontStyle, axis);
+    final AxisLabelRenderDetails axisLabelDetails = AxisLabelRenderDetails(
+        labelValue,
+        actualText,
+        fontStyle,
+        axis,
+        currentDateTimeIntervalType,
+        currentDateFormat);
     if (axis.axisLabelFormatter != null) {
       final ChartAxisLabel axisLabel =
           axis.axisLabelFormatter!(axisLabelDetails);
@@ -3569,37 +3584,6 @@ class ChartAxisRendererDetails {
         measureText(renderText, fontStyle, axis.labelRotation);
     visibleLabels.add(AxisLabel(fontStyle, labelSize,
         eventActualText ?? actualText, labelValue, trimmedText, renderText));
-  }
-
-  void triggerBoolChartLabelRenderEvent(
-      String labelText0, String labelText1, num labelValue) {
-    AxisLabelRenderArgs axisLabelArgs;
-    TextStyle fontStyle = axis.labelStyle;
-
-    String actualText;
-    if (labelValue == 0) {
-      actualText = labelText0;
-    } else if (labelValue == 1) {
-      actualText = labelText1;
-    } else {
-      actualText = "";
-    }
-
-    Size textSize = measureText(actualText, axis.labelStyle, 0);
-    String renderText = actualText;
-
-    if (chart.onAxisLabelRender != null) {
-      axisLabelArgs = AxisLabelRenderArgs(labelValue, name, orientation, axis);
-      axisLabelArgs.text = actualText;
-      axisLabelArgs.textStyle = fontStyle;
-      chart.onAxisLabelRender!(axisLabelArgs);
-      fontStyle = axisLabelArgs.textStyle;
-      renderText = axisLabelArgs.text!;
-    }
-    final Size labelSize =
-        measureText(renderText, fontStyle, axis.labelRotation);
-    visibleLabels.add(AxisLabel(
-        fontStyle, labelSize, actualText, labelValue, actualText, renderText));
   }
 
   /// Calculate the maximum label's size.
@@ -3735,8 +3719,9 @@ class ChartAxisRendererDetails {
         }
         break;
       case AxisLabelIntersectAction.wrap:
+      case AxisLabelIntersectAction.trim:
         label._labelCollection = _gettingLabelCollection(
-            label.renderText!, labelMaximumWidth, axisRenderer);
+            label.renderText!, labelMaximumWidth, axisRenderer, action);
         if (label._labelCollection!.isNotEmpty) {
           label.renderText = label._labelCollection![0];
         }

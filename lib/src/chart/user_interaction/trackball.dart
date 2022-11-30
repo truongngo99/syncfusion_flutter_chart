@@ -394,7 +394,7 @@ class TrackballBehavior {
       builder,
       hideDelay
     ];
-    return hashList(values);
+    return Object.hashAll(values);
   }
 
   /// Holds the value of cartesian state properties
@@ -427,8 +427,15 @@ class TrackballBehavior {
             _stateProperties.trackballBehaviorRenderer);
     final List<CartesianSeriesRenderer> visibleSeriesRenderer =
         stateProperties.chartSeries.visibleSeriesRenderers;
+    if (visibleSeriesRenderer.isEmpty) {
+      return;
+    }
     final SeriesRendererDetails seriesRendererDetails =
-        SeriesHelper.getSeriesRendererDetails(visibleSeriesRenderer[0]);
+        SeriesHelper.getSeriesRendererDetails(visibleSeriesRenderer.firstWhere(
+            (CartesianSeriesRenderer element) =>
+                SeriesHelper.getSeriesRendererDetails(element)
+                    .visibleDataPoints !=
+                null));
     if (trackballRenderingDetails.trackballPainter != null || builder != null) {
       final ChartAxisRendererDetails xAxisDetails =
           seriesRendererDetails.xAxisDetails!;
@@ -1291,23 +1298,29 @@ class TrackballRenderingDetails {
     for (final ChartPointInfo pointInfo in chartPointInfo) {
       xValueList.add(pointInfo.chartDataPoint?.xValue);
     }
+    String seriesType;
+    bool isRangeTypeSeries;
     if (xValueList.isNotEmpty) {
       for (int count = 0; count < xValueList.length; count++) {
         if (xValueList[0] != xValueList[count]) {
           final List<ChartPointInfo> leastPointInfo = <ChartPointInfo>[];
-          visiblePoints.clear();
           for (final ChartPointInfo pointInfo in chartPointInfo) {
             if (pointInfo.xPosition == leastX) {
               leastPointInfo.add(pointInfo);
+              visiblePoints.clear();
+              seriesType = pointInfo.seriesRendererDetails!.seriesType;
+              isRangeTypeSeries = seriesType.contains('range') ||
+                  seriesType.contains('hilo') ||
+                  seriesType == 'candle';
               visiblePoints.add(ClosestPoints(
-                  closestPointX: !isRangeSeries
+                  closestPointX: !isRangeTypeSeries
                       ? pointInfo.xPosition!
-                      : isBoxSeries
+                      : seriesType == 'boxandwhisker'
                           ? pointInfo.maxXPosition!
                           : pointInfo.highXPosition!,
-                  closestPointY: isRangeSeries
+                  closestPointY: isRangeTypeSeries
                       ? pointInfo.highYPosition!
-                      : isBoxSeries
+                      : seriesType == 'boxandwhisker'
                           ? pointInfo.maxYPosition!
                           : pointInfo.yPosition!));
             }

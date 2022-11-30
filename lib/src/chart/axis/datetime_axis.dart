@@ -360,7 +360,7 @@ class DateTimeAxis extends ChartAxis {
       autoScrollingMode,
       axisLabelFormatter
     ];
-    return hashList(values);
+    return Object.hashAll(values);
   }
 }
 
@@ -525,7 +525,9 @@ class DateTimeAxisRenderer extends ChartAxisRenderer {
           labelText = _axisDetails.dateTimeAxis.labelFormat!
               .replaceAll(RegExp('{value}'), labelText);
         }
-        _axisDetails.triggerLabelRenderEvent(labelText, interval);
+
+        _axisDetails.triggerLabelRenderEvent(labelText, interval,
+            _axisDetails.actualIntervalType, format.pattern!);
       }
       interval = _axisDetails
           ._increaseDateTimeInterval(

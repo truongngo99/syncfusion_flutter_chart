@@ -138,6 +138,7 @@ class ChartLegend {
             : isBottomOrTop
                 ? size.width
                 : percentageToValue('30%', size.width);
+
         // To reduce the container width based on offset.
         if (chartLegend.legend!.offset != null &&
             (chartLegend.legend!.offset?.dx.isNegative == false)) {
@@ -384,11 +385,27 @@ class ChartLegend {
               (!series.isVisible &&
                   seriesRendererDetails.oldSeries!.isVisible == true))) {
         legendRenderContext.isSelect = true;
-        if (stateProperties.renderingDetails.legendToggleStates
-                .contains(legendRenderContext) ==
-            false) {
+        final List<LegendRenderContext> legendToggleStates =
+            stateProperties.renderingDetails.legendToggleStates;
+        if (legendToggleStates.isEmpty) {
           stateProperties.renderingDetails.legendToggleStates
               .add(legendRenderContext);
+        } else {
+          LegendRenderContext? legendContext;
+          bool isSame = false;
+          for (int i = 0; i < legendToggleStates.length; i++) {
+            if (legendToggleStates[i] == legendRenderContext ||
+                legendToggleStates[i].seriesIndex ==
+                    legendRenderContext.seriesIndex) {
+              isSame = true;
+            } else if (!isSame) {
+              legendContext = legendRenderContext;
+            }
+          }
+          if (!isSame) {
+            stateProperties.renderingDetails.legendToggleStates
+                .add(legendContext!);
+          }
         }
       } else if (renderingDetails.widgetNeedUpdate &&
           (seriesRendererDetails.oldSeries != null &&
@@ -694,7 +711,9 @@ class ChartLegend {
 
     // ignore: prefer_if_null_operators
     cartesianShader = legendShader == null
-        ? !seriesType.contains('line') &&
+        ? (!seriesType.contains('line') ||
+                    (seriesType.contains('splinearea') ||
+                        seriesType.contains('splinerangearea'))) &&
                 (legendRenderContext.series is CartesianSeries &&
                     legendRenderContext.series.gradient != null &&
                     !legendRenderContext.isTrendline!)

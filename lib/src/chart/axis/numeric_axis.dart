@@ -28,10 +28,6 @@ import '../utils/helper.dart';
 ///
 @immutable
 class NumericAxis extends ChartAxis {
-  final String? labelBool0;
-  final String? labelBool1;
-  final bool isBoolChart;
-
   /// Creating an argument constructor of NumericAxis class.
   NumericAxis(
       {String? name,
@@ -84,10 +80,7 @@ class NumericAxis extends ChartAxis {
       List<NumericMultiLevelLabel>? multiLevelLabels,
       MultiLevelLabelFormatterCallback? multiLevelLabelFormatter,
       MultiLevelLabelStyle? multiLevelLabelStyle,
-      ChartLabelFormatterCallback? axisLabelFormatter,
-      this.labelBool0,
-      this.labelBool1,
-      this.isBoolChart = false})
+      ChartLabelFormatterCallback? axisLabelFormatter})
       : super(
             name: name,
             isVisible: isVisible,
@@ -362,7 +355,7 @@ class NumericAxis extends ChartAxis {
       autoScrollingMode,
       axisLabelFormatter
     ];
-    return hashList(values);
+    return Object.hashAll(values);
   }
 }
 
@@ -506,12 +499,7 @@ class NumericAxisRenderer extends ChartAxisRenderer {
                         .stateProperties.chartAxis.primaryYAxisDetails.name
             ? '$text%'
             : text;
-        if (!numericAxis.isBoolChart) {
-          axisDetails.triggerLabelRenderEvent(text, tempInterval);
-        } else {
-          axisDetails.triggerBoolChartLabelRenderEvent(
-              numericAxis.labelBool0!, numericAxis.labelBool1!, tempInterval);
-        }
+        axisDetails.triggerLabelRenderEvent(text, tempInterval);
       }
     }
 
@@ -749,7 +737,7 @@ class NumericAxisDetails extends ChartAxisRendererDetails {
     actualRange =
         VisibleRange(numericAxis.minimum ?? min, numericAxis.maximum ?? max);
     if (axis.anchorRangeToVisiblePoints &&
-        needCalculateYrange(numericAxis.minimum, numericAxis.maximum,
+        needCalculateYRange(numericAxis.minimum, numericAxis.maximum,
             stateProperties, orientation!)) {
       actualRange = calculateYRangeOnZoomX(actualRange!, this);
     }

@@ -245,6 +245,12 @@ class CartesianStateProperties extends StateProperties {
   /// Specifies the shader for series
   Shader? shader;
 
+  /// Specifies total number of rectangle series in chart
+  int? sideBySideSeriesCount;
+
+  /// Specifies total number of rectangle indicator series in chart
+  int? sideBySideIndicatorCount;
+
   /// Method to set the painter key
   void setPainterKey(int index, String name, bool renderComplete) {
     int value = 0;

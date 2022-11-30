@@ -592,7 +592,7 @@ class TooltipRenderingDetails {
           chart.series[seriesIndex].enableTooltip) {
         // To show the tooltip template when the provided indices are valid.
         _stateProperties.circularArea
-            ._showCircularTooltipTemplate(seriesIndex, pointIndex);
+            .showCircularTooltipTemplate(seriesIndex, pointIndex);
       } else if (chart.tooltipBehavior.builder == null &&
           _stateProperties.animationCompleted == true &&
           pointIndex >= 0 &&
@@ -1434,6 +1434,11 @@ class TooltipRenderingDetails {
               _markerType = _seriesRendererDetails!.series.markerSettings.shape;
               Color? seriesColor = _seriesRendererDetails!.seriesColor;
               if (_seriesRendererDetails!.seriesType == 'waterfall') {
+                pointIndex = _stateProperties.chart is SfCartesianChart
+                    ? (isTrendLine ?? false)
+                        ? regionRect[4].index
+                        : regionRect[4].visiblePointIndex
+                    : count;
                 seriesColor = getWaterfallSeriesColor(
                     _seriesRendererDetails!.series
                         as WaterfallSeries<dynamic, dynamic>,
@@ -1480,7 +1485,9 @@ class TooltipRenderingDetails {
               showLocation = tooltipPosition;
               if (prevTooltipData == null ||
                   prevTooltipData!.pointIndex ==
-                      _presentTooltipValue!.pointIndex) {
+                      _presentTooltipValue!.pointIndex ||
+                  prevTooltipData!.seriesIndex !=
+                      _presentTooltipValue!.seriesIndex) {
                 dataValues = values;
                 pointIndex = _stateProperties.chart is SfCartesianChart
                     ? (isTrendLine ?? false)

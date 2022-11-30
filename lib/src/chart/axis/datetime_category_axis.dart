@@ -377,7 +377,7 @@ class DateTimeCategoryAxis extends ChartAxis {
       dateFormat,
       axisLabelFormatter
     ];
-    return hashList(values);
+    return Object.hashAll(values);
   }
 }
 
@@ -555,7 +555,17 @@ class DateTimeCategoryAxisRenderer extends ChartAxisRenderer {
         } else {
           continue;
         }
-        _axisDetails.triggerLabelRenderEvent(labelText, tempInterval);
+        _axisDetails.triggerLabelRenderEvent(
+            labelText,
+            tempInterval,
+            _axisDetails.actualIntervalType,
+            _axisDetails.dateTimeFormat!.pattern);
+
+        /// Here the loop is terminated to avoid the format exception
+        /// while there is only one data point in data source.
+        if (interval == 0) {
+          break;
+        }
       }
     }
 

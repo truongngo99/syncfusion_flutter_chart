@@ -116,32 +116,47 @@ class CandleSeriesRenderer extends XyDataSeriesRenderer {
       CandleSegment candleSegment, SegmentProperties segmentProperties) {
     final SeriesRendererDetails candleSeriesDetails =
         SeriesHelper.getSeriesRendererDetails(segmentProperties.seriesRenderer);
+    // While removing the data point the overallDataPointIndex value is not updated based on
+    // currently available overall data point, it stick with the old overallDataPointIndex value.
+    // So, when check the candle series overAllDataPoints by overallDataPointIndex value it through
+    // range error exception. So, currently we fixed this by checking the length of overAllDataPoints
+    // instead of overallDataPointIndex when the overallDataPointIndex value greater than overAllDataPoints length.
+
+    final int overallDataPointIndex =
+        segmentProperties.currentPoint!.overallDataPointIndex!;
+    final int overAllDataPointsCount =
+        candleSeriesDetails.overAllDataPoints.length;
     if (_currentSeriesDetails.candleSeries.enableSolidCandles! &&
         segmentProperties.isSolid) {
       return (candleSeriesDetails
-                      .overAllDataPoints[segmentProperties
-                          .currentPoint!.overallDataPointIndex!]!
-                      .open <
-                  candleSeriesDetails
-                      .overAllDataPoints[segmentProperties
-                          .currentPoint!.overallDataPointIndex!]!
-                      .close) ==
-              true
+                  .overAllDataPoints[
+                      (overAllDataPointsCount - 1 < overallDataPointIndex)
+                          ? overAllDataPointsCount - 1
+                          : overallDataPointIndex]!
+                  .open <
+              candleSeriesDetails
+                  .overAllDataPoints[
+                      (overAllDataPointsCount - 1 < overallDataPointIndex)
+                          ? overAllDataPointsCount - 1
+                          : overallDataPointIndex]!
+                  .close)
           ? _currentSeriesDetails.candleSeries.bullColor
           : _currentSeriesDetails.candleSeries.bearColor;
     }
     final Color? color =
         segmentProperties.currentPoint!.overallDataPointIndex! - 1 >= 0 &&
                 (candleSeriesDetails
-                            .overAllDataPoints[segmentProperties
-                                    .currentPoint!.overallDataPointIndex! -
-                                1]!
-                            .close >
-                        candleSeriesDetails
-                            .overAllDataPoints[segmentProperties
-                                .currentPoint!.overallDataPointIndex!]!
-                            .close ==
-                    true)
+                        .overAllDataPoints[
+                            (overAllDataPointsCount - 1 < overallDataPointIndex)
+                                ? overAllDataPointsCount - 2
+                                : overallDataPointIndex - 1]!
+                        .close >
+                    candleSeriesDetails
+                        .overAllDataPoints[
+                            (overAllDataPointsCount - 1 < overallDataPointIndex)
+                                ? overAllDataPointsCount - 1
+                                : overallDataPointIndex]!
+                        .close)
             ? _currentSeriesDetails.candleSeries.bearColor
             : _currentSeriesDetails.candleSeries.bullColor;
     return color;
