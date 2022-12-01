@@ -104,10 +104,10 @@ class ChartSeriesPanel {
     final dynamic axis = seriesRendererDetails.xAxisDetails?.axis;
     final bool needAnimation =
         seriesRendererDetails.series.animationDuration > 0 == true &&
-            seriesRendererDetails.yAxisDetails!.runtimeType ==
-                oldSeriesRendererDetails.yAxisDetails!.runtimeType &&
-            seriesRendererDetails.xAxisDetails!.runtimeType ==
-                oldSeriesRendererDetails.xAxisDetails!.runtimeType &&
+            seriesRendererDetails.yAxisDetails?.runtimeType ==
+                oldSeriesRendererDetails.yAxisDetails?.runtimeType &&
+            seriesRendererDetails.xAxisDetails?.runtimeType ==
+                oldSeriesRendererDetails.xAxisDetails?.runtimeType &&
             ((oldAxis.visibleMinimum != null &&
                     oldAxis.visibleMinimum != axis.visibleMinimum) ||
                 (oldAxis.visibleMaximum != null &&
