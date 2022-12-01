@@ -100,8 +100,8 @@ class ChartSeriesPanel {
         SeriesHelper.getSeriesRendererDetails(seriesRenderer);
     final SeriesRendererDetails oldSeriesRendererDetails =
         SeriesHelper.getSeriesRendererDetails(oldSeriesRenderer);
-    final dynamic oldAxis = oldSeriesRendererDetails.xAxisDetails!.axis;
-    final dynamic axis = seriesRendererDetails.xAxisDetails!.axis;
+    final dynamic oldAxis = oldSeriesRendererDetails.xAxisDetails?.axis;
+    final dynamic axis = seriesRendererDetails.xAxisDetails?.axis;
     final bool needAnimation =
         seriesRendererDetails.series.animationDuration > 0 == true &&
             seriesRendererDetails.yAxisDetails!.runtimeType ==
