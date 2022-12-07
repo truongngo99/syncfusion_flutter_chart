@@ -2291,6 +2291,8 @@ class ContainerArea extends StatelessWidget {
   Offset? _zoomStartPosition;
   bool get _enableMouseHover => _stateProperties.enableMouseHover;
 
+  bool isSelectingChart = false;
+
   /// Get trackball rendering Details
   TrackballRenderingDetails get trackballRenderingDetails =>
       TrackballHelper.getRenderingDetails(
@@ -2371,8 +2373,8 @@ class ContainerArea extends StatelessWidget {
                             renderBox.globalToLocal(event.position);
                         chart.onChartTouchInteractionMove!(touchArgs);
                       }
-
                       if (chart.zoomPanBehavior.enableSelectArea) {
+                        isSelectingChart = true;
                         final Offset position = renderBox.globalToLocal(event.position);
                         _stateProperties.zoomPanBehaviorRenderer.onDrawSelectionZoomRect(
                             position.dx,
@@ -2394,7 +2396,8 @@ class ContainerArea extends StatelessWidget {
                             renderBox.globalToLocal(event.position);
                         chart.onChartTouchInteractionUp!(touchArgs);
                       }
-                      if (chart.zoomPanBehavior.enableSelectArea) {
+                      if (chart.zoomPanBehavior.enableSelectArea && isSelectingChart) {
+                        isSelectingChart = false;
                         zoomingBehaviorDetails
                             .doSelectionZooming(zoomingBehaviorDetails.zoomingRect);
                         if (zoomingBehaviorDetails.canPerformSelection != true) {
