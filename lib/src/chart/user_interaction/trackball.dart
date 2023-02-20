@@ -1386,8 +1386,8 @@ class TrackballRenderingDetails {
       ..style = PaintingStyle.stroke;
 
     final Paint fillPaint = Paint()
-      ..color = markerSettings.color ??
-          (renderingDetails.chartTheme.brightness == Brightness.light
+      ..color = seriesRendererDetails.series.color
+          ?? (renderingDetails.chartTheme.brightness == Brightness.light
               ? Colors.white
               : Colors.black)
       ..style = PaintingStyle.fill;
