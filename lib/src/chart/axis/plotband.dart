@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_core/core.dart';
 
@@ -62,9 +64,9 @@ class PlotBand {
                 fontWeight: FontWeight.normal,
                 fontSize: 12);
 
-  ///Toggles the visibility of the plot band.
+  /// Toggles the visibility of the plot band.
   ///
-  ///Defaults to `true`.
+  /// Defaults to `true`.
   ///
   ///```dart
   ///Widget build(BuildContext context) {
@@ -77,14 +79,15 @@ class PlotBand {
   ///                )
   ///              ]
   ///           )
-  ///        ));
+  ///        )
+  ///    );
   ///}
   ///```
   final bool isVisible;
 
-  ///Specifies the start value of plot band.
+  /// Specifies the start value of plot band.
   ///
-  ///Defaults to `true`.
+  /// Defaults to `true`.
   ///
   ///```dart
   ///Widget build(BuildContext context) {
@@ -99,14 +102,15 @@ class PlotBand {
   ///                )
   ///              ]
   ///           )
-  ///        ));
+  ///        )
+  ///    );
   ///}
   ///```
   final dynamic start;
 
-  ///Specifies the end value of plot band.
+  /// Specifies the end value of plot band.
   ///
-  ///Defaults to `true`.
+  /// Defaults to `true`.
   ///
   ///```dart
   ///Widget build(BuildContext context) {
@@ -121,12 +125,13 @@ class PlotBand {
   ///                )
   ///              ]
   ///           )
-  ///        ));
+  ///        )
+  ///    );
   ///}
   ///```
   final dynamic end;
 
-  ///Text to be displayed in the plot band segment.
+  /// Text to be displayed in the plot band segment.
   ///
   ///
   ///```dart
@@ -141,12 +146,13 @@ class PlotBand {
   ///                )
   ///              ]
   ///           )
-  ///        ));
+  ///        )
+  ///    );
   ///}
   ///```
   final String? text;
 
-  ///Customizes the text style of plot band.
+  /// Customizes the text style of plot band.
   ///
   ///```dart
   ///Widget build(BuildContext context) {
@@ -160,14 +166,15 @@ class PlotBand {
   ///                )
   ///              ]
   ///           )
-  ///        ));
+  ///        )
+  ///    );
   ///}
   ///```
   final TextStyle textStyle;
 
-  ///Color of the plot band.
+  /// Color of the plot band.
   ///
-  ///Defaults to `Colors.grey`
+  /// Defaults to `Colors.grey`.
   ///
   ///```dart
   ///Widget build(BuildContext context) {
@@ -181,14 +188,15 @@ class PlotBand {
   ///                )
   ///              ]
   ///           )
-  ///        ));
+  ///        )
+  ///    );
   ///}
   ///```
   final Color color;
 
-  ///Color of the plot band border.
+  /// Color of the plot band border.
   ///
-  ///Defaults to `Colors.transparent`
+  /// Defaults to `Colors.transparent`.
   ///
   ///```dart
   ///Widget build(BuildContext context) {
@@ -202,14 +210,15 @@ class PlotBand {
   ///                )
   ///              ]
   ///           )
-  ///        ));
+  ///        )
+  ///    );
   ///}
   ///```
   final Color borderColor;
 
-  ///Width of the plot band border.
+  /// Width of the plot band border.
   ///
-  ///Defaults to `0`
+  /// Defaults to `0`.
   ///
   ///```dart
   ///Widget build(BuildContext context) {
@@ -223,14 +232,15 @@ class PlotBand {
   ///                )
   ///              ]
   ///           )
-  ///        ));
+  ///        )
+  ///    );
   ///}
   ///```
   final double borderWidth;
 
-  ///Opacity of the plot band. The value ranges from 0 to 1.
+  /// Opacity of the plot band. The value ranges from 0 to 1.
   ///
-  ///Defaults to `1`
+  /// Defaults to `1`.
   ///
   ///```dart
   ///Widget build(BuildContext context) {
@@ -244,14 +254,15 @@ class PlotBand {
   ///                )
   ///              ]
   ///           )
-  ///        ));
+  ///        )
+  ///    );
   ///}
   ///```
   final double opacity;
 
-  ///Specifies the plot band need to be repeated in specified interval.
+  /// Specifies the plot band need to be repeated in specified interval.
   ///
-  ///Defaults to `false`
+  /// Defaults to `false`.
   ///
   ///```dart
   ///Widget build(BuildContext context) {
@@ -265,12 +276,13 @@ class PlotBand {
   ///                )
   ///              ]
   ///           )
-  ///        ));
+  ///        )
+  ///    );
   ///}
   ///```
   final bool isRepeatable;
 
-  ///Interval of the plot band need to be repeated.
+  /// Interval of the plot band need to be repeated.
   ///
   ///```dart
   ///Widget build(BuildContext context) {
@@ -284,12 +296,13 @@ class PlotBand {
   ///                )
   ///              ]
   ///           )
-  ///        ));
+  ///        )
+  ///     );
   ///}
   ///```
   final dynamic repeatEvery;
 
-  ///End of the plot band need to be repeated.
+  /// End of the plot band need to be repeated.
   ///
   ///```dart
   ///Widget build(BuildContext context) {
@@ -303,12 +316,13 @@ class PlotBand {
   ///                )
   ///              ]
   ///           )
-  ///        ));
+  ///        )
+  ///    );
   ///}
   ///```
   final dynamic repeatUntil;
 
-  ///Angle of the plot band text.
+  /// Angle of the plot band text.
   ///
   ///```dart
   ///Widget build(BuildContext context) {
@@ -322,14 +336,15 @@ class PlotBand {
   ///                )
   ///              ]
   ///           )
-  ///        ));
+  ///        )
+  ///    );
   ///}
   ///```
   final double? textAngle;
 
-  ///Specifies the whether plot band need to be rendered above the series.
+  /// Specifies whether the plot band needs to be rendered above the series.
   ///
-  ///Defaults to `false`
+  /// Defaults to `false`.
   ///
   ///```dart
   ///Widget build(BuildContext context) {
@@ -343,14 +358,15 @@ class PlotBand {
   ///                )
   ///              ]
   ///           )
-  ///        ));
+  ///        )
+  ///    );
   ///}
   ///```
   final bool shouldRenderAboveSeries;
 
-  ///Date time interval type of the plot band.
+  /// Date time interval type of the plot band.
   ///
-  ///Defaults to `false`
+  /// Defaults to  `DateTimeIntervalType.auto`.
   ///
   ///```dart
   ///Widget build(BuildContext context) {
@@ -364,13 +380,14 @@ class PlotBand {
   ///                )
   ///              ]
   ///           )
-  ///        ));
+  ///        )
+  ///    );
   ///}
   ///```
   final DateTimeIntervalType sizeType;
 
-  ///Dashes of the series. Any number of values can be provided in the list. Odd value
-  ///is considered as rendering size and even value is considered as gap.
+  /// Dashes of the series. Any number of values can be provided in the list. Odd value
+  /// is considered as rendering size and even value is considered as gap.
   ///
   ///```dart
   ///Widget build(BuildContext context) {
@@ -384,12 +401,13 @@ class PlotBand {
   ///                )
   ///              ]
   ///           )
-  ///        ));
+  ///        )
+  ///    );
   ///}
   ///```
   final List<double> dashArray;
 
-  ///Size of the plot band
+  /// Size of the plot band.
   ///
   ///```dart
   ///Widget build(BuildContext context) {
@@ -403,12 +421,13 @@ class PlotBand {
   ///                )
   ///              ]
   ///           )
-  ///        ));
+  ///        )
+  ///    );
   ///}
   ///```
   final dynamic size;
 
-  ///Perpendicular axis start value.
+  /// Perpendicular axis start value.
   ///
   ///```dart
   ///Widget build(BuildContext context) {
@@ -422,12 +441,13 @@ class PlotBand {
   ///                )
   ///              ]
   ///           )
-  ///        ));
+  ///        )
+  ///    );
   ///}
   ///```
   final dynamic associatedAxisStart;
 
-  ///Perpendicular axis end value.
+  /// Perpendicular axis end value.
   ///
   ///```dart
   ///Widget build(BuildContext context) {
@@ -441,14 +461,15 @@ class PlotBand {
   ///                )
   ///              ]
   ///           )
-  ///        ));
+  ///        )
+  ///    );
   ///}
   ///```
   final dynamic associatedAxisEnd;
 
-  ///Vertical text alignment of the plot band text
+  /// Vertical text alignment of the plot band text.
   ///
-  ///Defaults to `TextAnchor.middle`
+  /// Defaults to `TextAnchor.middle`.
   ///
   ///```dart
   ///Widget build(BuildContext context) {
@@ -462,14 +483,15 @@ class PlotBand {
   ///                )
   ///              ]
   ///           )
-  ///        ));
+  ///        )
+  ///    );
   ///}
   ///```
   final TextAnchor verticalTextAlignment;
 
-  ///Horizontal text alignment of the plot band text
+  /// Horizontal text alignment of the plot band text.
   ///
-  ///Defaults to `TextAnchor.middle`
+  /// Defaults to `TextAnchor.middle`.
   ///
   ///```dart
   ///Widget build(BuildContext context) {
@@ -483,12 +505,13 @@ class PlotBand {
   ///                )
   ///              ]
   ///           )
-  ///        ));
+  ///        )
+  ///    );
   ///}
   ///```
   final TextAnchor horizontalTextAlignment;
 
-  ///Fills the plot band with gradient color.
+  /// Fills the plot band with gradient color.
   ///
   ///```dart
   ///final List <Color> color = <Color>[];
@@ -514,25 +537,26 @@ class PlotBand {
   ///                )
   ///              ]
   ///           )
-  ///        ));
+  ///        )
+  ///     );
   ///}
   ///```
   final LinearGradient? gradient;
 
-  ///To move the plot band text vertically.
+  /// To move the plot band text vertically.
   ///
-  ///Takes pixel or percentage value. For pixel, input should be like `10px` and for percentage
+  /// Takes pixel or percentage value. For pixel, input should be like `10px` and for percentage
   /// input should be like `10%`. If no suffix is specified (`10`), it will be considered as pixel value.
   /// Percentage value referes to the overall height of the chart. i.e. 100% is equal to the height
   /// of the chart.
   ///
-  ///This is applicable for both vertical and horizontal axis. Positive value for this property
+  /// This is applicable for both vertical and horizontal axis. Positive value for this property
   /// moves the text upwards and negative value moves downwards.
   ///
-  ///If [verticalTextAlignment] or [horizontalTextAlignment] is specified, text padding will be calculated
+  /// If [verticalTextAlignment] or [horizontalTextAlignment] is specified, text padding will be calculated
   /// from that modified position.
   ///
-  ///Defaults to `null`
+  /// Defaults to `null`.
   ///
   ///
   ///```dart
@@ -547,24 +571,25 @@ class PlotBand {
   ///                )
   ///              ]
   ///           )
-  ///        ));
+  ///        )
+  ///    );
   ///}
   final String? verticalTextPadding;
 
-  ///To move the plot band text horizontally.
+  /// To move the plot band text horizontally.
   ///
-  ///Takes pixel or percentage value. For pixel, input should be like `10px` and for percentage
+  /// Takes pixel or percentage value. For pixel, input should be like `10px` and for percentage
   /// input should be like `10%`. If no suffix is specified (`10`), it will be considered as pixel value.
   /// Percentage value referes to the overall width of the chart. i.e. 100% is equal to the width
   /// of the chart.
   ///
-  ///This is applicable for both vertical and horizontal axis. Positive value for this property
+  /// This is applicable for both vertical and horizontal axis. Positive value for this property
   /// moves the text to right and negative value moves to left.
   ///
-  ///If [verticalTextAlignment] or [horizontalTextAlignment] is specified, text padding will be calculated
+  /// If [verticalTextAlignment] or [horizontalTextAlignment] is specified, text padding will be calculated
   /// from that modified position.
   ///
-  ///Defaults to `null`
+  /// Defaults to `null`.
   ///```dart
   ///
   ///Widget build(BuildContext context) {
@@ -577,7 +602,8 @@ class PlotBand {
   ///                )
   ///              ]
   ///           )
-  ///        ));
+  ///        )
+  ///    );
   ///}
   final String? horizontalTextPadding;
   @override
@@ -644,7 +670,7 @@ class PlotBand {
       horizontalTextAlignment,
       gradient
     ];
-    return hashList(values);
+    return Object.hashAll(values);
   }
 }
 
@@ -863,28 +889,27 @@ class _PlotBandPainter extends CustomPainter {
             axisDetails.orientation == AxisOrientation.vertical
                 ? axis.plotOffset
                 : 0));
-
-    startValue = axis is LogarithmicAxis
-        ? calculateLogBaseValue(startValue, axis.logBase)
-        : startValue;
-    endValue = axis is LogarithmicAxis
-        ? calculateLogBaseValue(endValue, axis.logBase)
-        : endValue;
+    final num visibleMin = axis is LogarithmicAxis
+        ? pow(axis.logBase, axisDetails.visibleRange!.minimum)
+        : axisDetails.visibleRange!.minimum;
+    final num visibleMax = axis is LogarithmicAxis
+        ? pow(axis.logBase, axisDetails.visibleRange!.maximum)
+        : axisDetails.visibleRange!.maximum;
 
     endValue < 0
-        ? endValue <= axisDetails.visibleRange!.minimum
-            ? endValue = axisDetails.visibleRange!.minimum
+        ? endValue <= visibleMin
+            ? endValue = visibleMin
             : endValue = endValue
-        : endValue >= axisDetails.visibleRange!.maximum
-            ? endValue = axisDetails.visibleRange!.maximum
+        : endValue >= visibleMax
+            ? endValue = visibleMax
             : endValue = endValue;
 
     startValue < 0
-        ? startValue <= axisDetails.visibleRange!.minimum
-            ? startValue = axisDetails.visibleRange!.minimum
+        ? startValue <= visibleMin
+            ? startValue = visibleMin
             : startValue = startValue
-        : startValue >= axisDetails.visibleRange!.maximum
-            ? startValue = axisDetails.visibleRange!.maximum
+        : startValue >= visibleMax
+            ? startValue = visibleMax
             : startValue = startValue;
 
     startPoint = calculatePoint(startValue, startValue, axisDetails,
@@ -1007,13 +1032,13 @@ class _PlotBandPainter extends CustomPainter {
         ..close();
 
       final Paint paint = Paint();
-      Path? _dashPath;
+      Path? dashedPath;
       if (needDashLine) {
         paint.isAntiAlias = false;
-        _dashPath =
+        dashedPath =
             dashPath(path, dashArray: CircularIntervalList<double>(dashArray));
       } else {
-        _dashPath = path;
+        dashedPath = path;
       }
       // ignore: unnecessary_null_comparison
       if (path != null) {
@@ -1032,9 +1057,9 @@ class _PlotBandPainter extends CustomPainter {
             // ignore: unnecessary_null_comparison
             plotBand.borderColor != null &&
             // ignore: unnecessary_null_comparison
-            _dashPath != null) {
+            dashedPath != null) {
           canvas.drawPath(
-              _dashPath,
+              dashedPath,
               paint
                 ..color = plotBand.borderColor.withOpacity(plotBand.opacity)
                 ..style = PaintingStyle.stroke

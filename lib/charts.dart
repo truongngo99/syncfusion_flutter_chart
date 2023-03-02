@@ -1,7 +1,7 @@
 /// Syncfusion Flutter Charts is a data visualization library written natively in Dart for
 /// creating beautiful and high-performance cartesian, circular, pyramid and funnel charts.
 ///
-/// To use, import `package:syncfusion_flutter_chart/charts.dart`.
+/// To use, import `package:syncfusion_flutter_charts/charts.dart`.
 ///
 /// {@youtube 560 315 https://www.youtube.com/watch?v=JAAnmOfoqg8}
 ///
