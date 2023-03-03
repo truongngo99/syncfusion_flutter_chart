@@ -47,6 +47,7 @@ class TrackballBehavior {
     this.lineWidth = 1,
     this.shouldAlwaysShow = false,
     this.builder,
+    this.onHideTrackball,
     this.hideDelay = 0,
   });
 
@@ -352,6 +353,12 @@ class TrackballBehavior {
   /// ```
   final ChartTrackballBuilder<dynamic>? builder;
 
+  /// Event after trackball is hide
+  ///
+  /// Params: x, y position
+  /// ```
+  final Function(double, double)? onHideTrackball;
+
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) {
@@ -549,6 +556,9 @@ class TrackballBehavior {
           trackballRenderingDetails.chartPointInfo.clear();
         });
       }
+    }
+    if (onHideTrackball != null) {
+      onHideTrackball!(0, 0);
     }
   }
 }
@@ -1376,8 +1386,8 @@ class TrackballRenderingDetails {
       ..style = PaintingStyle.stroke;
 
     final Paint fillPaint = Paint()
-      ..color = markerSettings.color ??
-          (renderingDetails.chartTheme.brightness == Brightness.light
+      ..color = seriesRendererDetails.series.color
+          ?? (renderingDetails.chartTheme.brightness == Brightness.light
               ? Colors.white
               : Colors.black)
       ..style = PaintingStyle.fill;

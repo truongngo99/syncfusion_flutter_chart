@@ -32,6 +32,7 @@ class ZoomPanBehavior {
       this.enablePanning = false,
       this.enableSelectionZooming = false,
       this.enableMouseWheelZooming = false,
+      this.enableSelectArea = false,
       this.zoomMode = ZoomMode.xy,
       this.maximumZoomLevel = 0.01,
       this.selectionRectBorderWidth = 1,
@@ -161,6 +162,20 @@ class ZoomPanBehavior {
   /// }
   /// ```
   final bool enableMouseWheelZooming;
+
+  /// Enables or disables the enableSelectArea.
+  ///
+  /// Don't set true other options when using this feature.
+  ///
+  /// ```dart
+  ///.enablePinching = false,
+  /// enableDoubleTapZooming = false,
+  /// enablePanning = false,
+  /// enableSelectionZooming = false,
+  /// enableMouseWheelZooming = false,
+  /// enableSelectArea = true,
+  /// ```
+  final bool enableSelectArea;
 
   /// By default, both the x and y-axes in the chart can be zoomed.
   ///
@@ -1013,18 +1028,9 @@ class ZoomingBehaviorDetails {
 
   /// Below method is for mouse wheel Zooming.
   void performMouseWheelZooming(
-      PointerEvent event, double mouseX, double mouseY) {
+      PointerScrollEvent event, double mouseX, double mouseY) {
     stateProperties.canSetRangeController = true;
-    double direction = 0.0;
-    if (event is PointerScrollEvent) {
-      direction = (event.scrollDelta.dy / 120) > 0 ? -1 : 1;
-    } else if (event is PointerPanZoomUpdateEvent) {
-      direction = event.panDelta.dy == 0
-          ? 0
-          : (event.panDelta.dy / 120) > 0
-              ? 1
-              : -1;
-    }
+    final double direction = (event.scrollDelta.dy / 120) > 0 ? -1 : 1;
     double origin = 0.5;
     double cumulative, zoomFactor, zoomPosition, maxZoomFactor;
     stateProperties.zoomProgress = true;

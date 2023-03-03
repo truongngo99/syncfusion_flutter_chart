@@ -3586,6 +3586,37 @@ class ChartAxisRendererDetails {
         eventActualText ?? actualText, labelValue, trimmedText, renderText));
   }
 
+  void triggerBoolChartLabelRenderEvent(
+      String labelText0, String labelText1, num labelValue) {
+    AxisLabelRenderArgs axisLabelArgs;
+    TextStyle fontStyle = axis.labelStyle;
+
+    String actualText;
+    if (labelValue == 0) {
+      actualText = labelText0;
+    } else if (labelValue == 1) {
+      actualText = labelText1;
+    } else {
+      actualText = "";
+    }
+
+    Size textSize = measureText(actualText, axis.labelStyle, 0);
+    String renderText = actualText;
+
+    if (chart.onAxisLabelRender != null) {
+      axisLabelArgs = AxisLabelRenderArgs(labelValue, name, orientation, axis);
+      axisLabelArgs.text = actualText;
+      axisLabelArgs.textStyle = fontStyle;
+      chart.onAxisLabelRender!(axisLabelArgs);
+      fontStyle = axisLabelArgs.textStyle;
+      renderText = axisLabelArgs.text!;
+    }
+    final Size labelSize =
+        measureText(renderText, fontStyle, axis.labelRotation);
+    visibleLabels.add(AxisLabel(
+        fontStyle, labelSize, actualText, labelValue, actualText, renderText));
+  }
+
   /// Calculate the maximum label's size.
   void calculateMaximumLabelSize(ChartAxisRenderer axisRenderer,
       CartesianStateProperties stateProperties) {

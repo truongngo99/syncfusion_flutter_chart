@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:syncfusion_flutter_chart/charts.dart';
-import 'package:syncfusion_flutter_chart/sparkcharts.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
+import 'package:syncfusion_flutter_charts/sparkcharts.dart';
 
 void main() {
   return runApp(_ChartApp());
@@ -55,7 +55,7 @@ class _MyHomePageState extends State<_MyHomePage> {
                     yValueMapper: (_SalesData sales, _) => sales.sales,
                     name: 'Sales',
                     // Enable data label
-                    dataLabelSettings: DataLabelSettings(isVisible: true))
+                    dataLabelSettings: const DataLabelSettings(isVisible: true))
               ]),
           Expanded(
             child: Padding(
@@ -63,10 +63,10 @@ class _MyHomePageState extends State<_MyHomePage> {
               //Initialize the spark charts widget
               child: SfSparkLineChart.custom(
                 //Enable the trackball
-                trackball: SparkChartTrackball(
+                trackball: const SparkChartTrackball(
                     activationMode: SparkChartActivationMode.tap),
                 //Enable marker
-                marker: SparkChartMarker(
+                marker: const SparkChartMarker(
                     displayMode: SparkChartMarkerDisplayMode.all),
                 //Enable data label
                 labelDisplayMode: SparkChartLabelDisplayMode.all,

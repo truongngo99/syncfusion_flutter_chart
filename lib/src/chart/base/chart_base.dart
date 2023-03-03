@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:ui';
 import 'dart:ui' as dart_ui;
 
@@ -82,6 +83,9 @@ import '../user_interaction/zooming_panning.dart';
 import '../utils/enum.dart';
 import '../utils/helper.dart';
 
+typedef ChartAxisLabelRenderCallBack = void Function(
+    AxisLabelRenderArgs axisLabelRenderArgs);
+
 /// Renders the Cartesian type charts.
 ///
 /// Cartesian charts are generally charts with horizontal and vertical axes.[SfCartesianChart] provides options to customize
@@ -158,6 +162,7 @@ class SfCartesianChart extends StatefulWidget {
   /// Creating an argument constructor of SfCartesianChart class.
   SfCartesianChart(
       {Key? key,
+      this.onAxisLabelRender,
       this.backgroundColor,
       this.enableSideBySideSeriesPlacement = true,
       this.borderColor = Colors.transparent,
@@ -249,6 +254,9 @@ class SfCartesianChart extends StatefulWidget {
   ///    );
   ///}
   ///```
+
+  final ChartAxisLabelRenderCallBack? onAxisLabelRender;
+
   final ChartTitle title;
 
   /// Customizes the legend in the chart.
@@ -2283,6 +2291,8 @@ class ContainerArea extends StatelessWidget {
   Offset? _zoomStartPosition;
   bool get _enableMouseHover => _stateProperties.enableMouseHover;
 
+  bool isSelectingChart = false;
+
   /// Get trackball rendering Details
   TrackballRenderingDetails get trackballRenderingDetails =>
       TrackballHelper.getRenderingDetails(
@@ -2363,6 +2373,15 @@ class ContainerArea extends StatelessWidget {
                             renderBox.globalToLocal(event.position);
                         chart.onChartTouchInteractionMove!(touchArgs);
                       }
+                      if (chart.zoomPanBehavior.enableSelectArea) {
+                        isSelectingChart = true;
+                        final Offset position = renderBox.globalToLocal(event.position);
+                        _stateProperties.zoomPanBehaviorRenderer.onDrawSelectionZoomRect(
+                            position.dx,
+                            position.dy,
+                            _zoomStartPosition!.dx,
+                            _zoomStartPosition!.dy);
+                      }
                     }
                   },
                   onPointerUp: (PointerUpEvent event) {
@@ -2377,18 +2396,20 @@ class ContainerArea extends StatelessWidget {
                             renderBox.globalToLocal(event.position);
                         chart.onChartTouchInteractionUp!(touchArgs);
                       }
+                      if (chart.zoomPanBehavior.enableSelectArea && isSelectingChart) {
+                        isSelectingChart = false;
+                        zoomingBehaviorDetails
+                            .doSelectionZooming(zoomingBehaviorDetails.zoomingRect);
+                        if (zoomingBehaviorDetails.canPerformSelection != true) {
+                          zoomingBehaviorDetails.zoomingRect = Rect.zero;
+                        }
+                      }
                     }
                   },
                   onPointerSignal: (PointerSignalEvent event) {
                     if (_stateProperties.chartState.mounted &&
                         event is PointerScrollEvent) {
-                      _performPointerEvent(event);
-                    }
-                  },
-                  // To handle the trackpad zooming
-                  onPointerPanZoomUpdate: (PointerPanZoomUpdateEvent event) {
-                    if (_stateProperties.chartState.mounted) {
-                      _performPointerEvent(event);
+                      _performPointerSignal(event);
                     }
                   },
                   child: GestureDetector(
@@ -2745,7 +2766,8 @@ class ContainerArea extends StatelessWidget {
           point = dataPoints[j];
           if (point.isVisible &&
               !point.isGap &&
-              withInRange(point.xValue, seriesRendererDetails.xAxisDetails!)) {
+              withInRange(point.xValue,
+                  seriesRendererDetails.xAxisDetails!)) {
             labelWidget = (series.dataLabelSettings.builder != null)
                 ? series.dataLabelSettings.builder!(
                     series.dataSource[point.overallDataPointIndex!],
@@ -3299,7 +3321,7 @@ class ContainerArea extends StatelessWidget {
   }
 
   /// To perform the pointer signal event
-  void _performPointerEvent(PointerEvent event) {
+  void _performPointerSignal(PointerScrollEvent event) {
     _mousePointerDetails = event.position;
     if (_mousePointerDetails != null) {
       final Offset position = renderBox.globalToLocal(event.position);

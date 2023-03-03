@@ -100,20 +100,24 @@ class ChartSeriesPanel {
         SeriesHelper.getSeriesRendererDetails(seriesRenderer);
     final SeriesRendererDetails oldSeriesRendererDetails =
         SeriesHelper.getSeriesRendererDetails(oldSeriesRenderer);
-    final dynamic oldAxis = oldSeriesRendererDetails.xAxisDetails!.axis;
-    final dynamic axis = seriesRendererDetails.xAxisDetails!.axis;
-    final bool needAnimation =
-        seriesRendererDetails.series.animationDuration > 0 == true &&
-            seriesRendererDetails.yAxisDetails!.runtimeType ==
-                oldSeriesRendererDetails.yAxisDetails!.runtimeType &&
-            seriesRendererDetails.xAxisDetails!.runtimeType ==
-                oldSeriesRendererDetails.xAxisDetails!.runtimeType &&
-            ((oldAxis.visibleMinimum != null &&
-                    oldAxis.visibleMinimum != axis.visibleMinimum) ||
-                (oldAxis.visibleMaximum != null &&
-                    oldAxis.visibleMaximum != axis.visibleMaximum));
-    needAxisRangeAnimation = needAnimation;
-    return needAnimation;
+    final dynamic oldAxis = oldSeriesRendererDetails.xAxisDetails?.axis;
+    final dynamic axis = seriesRendererDetails.xAxisDetails?.axis;
+    if (oldAxis != null && axis != null) {
+      final bool needAnimation =
+          seriesRendererDetails.series.animationDuration > 0 == true &&
+              seriesRendererDetails.yAxisDetails?.runtimeType ==
+                  oldSeriesRendererDetails.yAxisDetails?.runtimeType &&
+              seriesRendererDetails.xAxisDetails?.runtimeType ==
+                  oldSeriesRendererDetails.xAxisDetails?.runtimeType &&
+              ((oldAxis.visibleMinimum != null &&
+                      oldAxis.visibleMinimum != axis.visibleMinimum) ||
+                  (oldAxis.visibleMaximum != null &&
+                      oldAxis.visibleMaximum != axis.visibleMaximum));
+      needAxisRangeAnimation = needAnimation;
+      return needAnimation;
+    } else {
+      return false;
+    }
   }
 
   /// Find the data points for each series
